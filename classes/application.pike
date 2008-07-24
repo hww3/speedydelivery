@@ -5,6 +5,7 @@ inherit Fins.Application;
 mapping plugins = ([]);
 mapping event_handlers = ([]);
 mapping destination_handlers = ([]);
+mapping valid_addresses = ([]);
 
 void start()
 {
@@ -155,11 +156,11 @@ object new_string_pref(string pref, string value)
   else 
   { 
      Log.info("Creating new preference object '" + pref  + "'.");
-     p = Fins.Model.new("preference");
-     p["Name"] = pref;
-     p["Type"] = SpeedyDelivery.STRING;
-     p["Value"] = value;
-     p["Description"] = "";
+     p = Fins.Model.new("Preference");
+     p["name"] = pref;
+     p["type"] = SpeedyDelivery.STRING;
+     p["value"] = value;
+     p["description"] = "";
      p->save();
      return p;
   }
@@ -172,11 +173,11 @@ object new_pref(string pref, string value, int type)
   if(p) return p;
   else 
   { 
-     p = Fins.Model.new("preference");
-     p["Name"] = pref;
-     p["Type"] = type;
-     p["Description"] = "";
-     p["Value"] = value;
+     p = Fins.Model.new("Preference");
+     p["name"] = pref;
+     p["type"] = type;
+     p["description"] = "";
+     p["value"] = value;
      p->save();
      return p;
   }

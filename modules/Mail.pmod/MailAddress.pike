@@ -120,7 +120,12 @@ void parse_tokens(array t)
     throw(Error.Generic("invalid address: host part contains invalid characters.\n"));
 }
 
+string get_address()
+{
+  return localpart + "@" + host;
+}
+
 string _sprintf(mixed t)
 {
-  return (name?("\"" + name + "\" "):"") + "<" + localpart + "@" + host + ">";
+  return (name?("\"" + name + "\" "):"") + "<" + get_address() + ">";
 }

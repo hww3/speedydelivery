@@ -6,7 +6,7 @@ void post_define()
 {
 // Add any post configuration logic here
 
-// set_alternate_key("myalternatekey");
+ set_alternate_key("name");
 
 }
 

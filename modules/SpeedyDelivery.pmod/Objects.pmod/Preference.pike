@@ -8,16 +8,16 @@ mixed get_value()
 {
   mixed val;
 
-  switch((int)this["Type"])
+  switch((int)this["type"])
   {
     case SpeedyDelivery.INTEGER:
-      val = (int)this["Value"];
+      val = (int)this["value"];
       break;
     case SpeedyDelivery.STRING:
-      val = this["Value"];
+      val = this["value"];
       break;
     case SpeedyDelivery.BOOLEAN:
-      val = ((int)this["Value"])?1:0;
+      val = ((int)this["value"])?1:0;
       break;
   }
 
