@@ -50,11 +50,19 @@ int|array handle_message(SpeedyDelivery.Request request)
   }
   else
   if(catch(
-    fails = Mail.RobustClient("localhost", 25)->send_message(request->list["name"] + "-bounces@lists.riverweb.com", 
-                           ({"q" + request->sender->get_address(), "hww3@riverweb.com"}), (string)request->mime)
+    fails = Mail.RobustClient("localhost", 25)->send_message(
+                   request->list["name"] + "-bounces@lists.riverweb.com", 
+                   request->list["Subscriptions"]["Subscriber"]["email"], 
+                   (string)request->mime)
   )) Log.warn("an error occurred while sending a message.");
 
-  if(fails) Log.debug("the following failures occurred: %O", fails);  
+  if(fails)
+  {
+    Log.debug("the following failures occurred: %O", fails);  
+    array f = Fins.Model.find.subscribers(
+                         (["email": Fins.Model.InCriteria(fails)]));
+    f["bounces"]++;    
+  }
 
   return 250;
 }
