@@ -5,6 +5,7 @@ inherit Protocols.SMTP.Client;
   static int cmd(string c, string|void comment)
   {
     int r = command(c);
+/*
     switch(r) {
     case 200..499:
       break;
@@ -12,6 +13,7 @@ inherit Protocols.SMTP.Client;
       error( "SMTP: "+c+"\n"+(comment?"SMTP: "+comment+"\n":"")+
              "SMTP: "+Protocols.SMTP.replycodes[r]+"\n" );
     }
+*/
     return r;
   }
 
