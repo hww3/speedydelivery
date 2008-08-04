@@ -5,3 +5,21 @@ create table lists (
    created datetime not null default CURRENT_TIMESTAMP
   );
 
+CREATE TABLE outbound_messages
+(
+  id integer PRIMARY KEY,
+  envelope_to varchar(320) not null,
+  envelope_from varchar(320) not null,
+  in_progress int NOT NULL default 0,
+  content MEDIUMBLOB,
+  queued datetime NOT NULL default CURRENT_TIMESTAMP,
+  last_attempt datetime NOT NULL default CURRENT_TIMESTAMP
+);
+
+CREATE TABLE preferences (
+  id integer PRIMARY KEY,
+  name char(64) NOT NULL default '',
+  description char(255) NOT NULL default '',
+  type int(1) NOT NULL default 0,
+  value char(64) NOT NULL default '',
+);

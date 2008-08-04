@@ -3,7 +3,18 @@ CREATE TABLE lists (
   name CHAR(16) UNIQUE KEY,
   description blob,
   created datetime NOT NULL default '0000-00-00 00:00:00'
-)
+);
+
+CREATE TABLE outbound_messages
+(
+  id int(11) NOT NULL auto_increment PRIMARY KEY,
+  envelope_to varchar(320) not null,
+  envelope_from varchar(320) not null,
+  in_progress int NOT NULL default 0,
+  content MEDIUMBLOB,
+  queued datetime NOT NULL default '0000-00-00 00:00:00',
+  last_attempt datetime NOT NULL default '0000-00-00 00:00:00'
+);
 
 CREATE TABLE preferences (
   id int(11) NOT NULL auto_increment,
