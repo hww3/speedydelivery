@@ -32,10 +32,11 @@ int|array _cb_data(object mime, string sender, array|string recipient,
     havesent++;
 
     rq = SpeedyDelivery.Request(app, mime, sender, r, raw, smtp);
-    res = handle_message(rq);
+    int res1 = handle_message(rq);
+    if(res1 > res) res = res1;
   }
 
-  return 250;
+  return res;
 }
 
 int|array handle_message(SpeedyDelivery.Request request)
@@ -49,22 +50,45 @@ int|array handle_message(SpeedyDelivery.Request request)
     app->destination_handlers[request->functionname](request);
   }
   else
-  if(catch(
-    fails = Mail.RobustClient("localhost", 25)->send_message(
-                   request->list["name"] + "-bounces@lists.riverweb.com", 
+  {
+    mapping o = request->list->get_options();
+
+    if(o->reject_non_subscribers) 
+    { 
+       Log.debug("checking to see if the sender is a subscriber.");
+       if(!sizeof(Fins.Model.find.subscriptions(
+                (["Subscriber": Fins.Model.find.subscribers_by_alt(request->sender->get_address()),
+                 "List": request->list ]))))
+      {
+        Log.debug("checking to see if the sender is a subscriber.");
+        return 550;
+      }
+    }
+
+    
+    rewrite_message(request, request->mime);
+
+    if(catch(
+      fails = Mail.RobustClient("localhost", 25)->send_message(
+                   request->list["name"] + "-bounces@" + request->getmyhostname(), 
                    request->list["Subscriptions"]["Subscriber"]["email"], 
                    (string)request->mime)
-  )) Log.warn("an error occurred while sending a message.");
+    )) Log.warn("an error occurred while sending a message.");
 
-  if(fails)
-  {
-    Log.debug("the following failures occurred: %O", fails);  
-    array f = Fins.Model.find.subscribers(
+    if(fails)
+    {
+      Log.debug("the following failures occurred: %O", fails);  
+      array f = Fins.Model.find.subscribers(
                          (["email": Fins.Model.InCriteria(fails)]));
-    f["bounces"]++;    
+      f["bounces"]++;    
+    }
   }
-
   return 250;
+}
+
+void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
+{
+  mime->headers["list-id"] = "<" +  request->list_address + ">";
 }
 
 int check_destination(string addr)
