@@ -22,7 +22,6 @@ void load_default_destination_handler()
 
   object lho = lhp(this);
   destination_handlers->__default = lho->handle_post;
-
 }
 
 void load_plugins()
@@ -194,4 +193,12 @@ object new_pref(string pref, string value, int type)
      p->save();
      return p;
   }
+}
+
+
+int|array send_message_for_list(SpeedyDelivery.Objects.List list, array recipients, string message)
+{
+    return Mail.RobustClient(config["smtp"]->host, 25)->send_message(
+                   list["name"] + "-bounces@" + request->getmyhostname(),
+                   recipients, message);
 }

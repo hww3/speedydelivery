@@ -43,52 +43,12 @@ int|array handle_message(SpeedyDelivery.Request request)
 {
   Log.info("smtp_processor: handling message for list %O, function %O", request->list, request->functionname||"");
 
-  array fails;
-
   if(request->functionname)
   {
     app->destination_handlers[request->functionname](request);
   }
   else
-  {
-    mapping o = request->list->get_options();
-
-    if(o->reject_non_subscribers) 
-    { 
-       Log.debug("checking to see if the sender is a subscriber.");
-       if(!sizeof(Fins.Model.find.subscriptions(
-                (["Subscriber": Fins.Model.find.subscribers_by_alt(request->sender->get_address()),
-                 "List": request->list ]))))
-      {
-        Log.debug("checking to see if the sender is a subscriber.");
-        return 550;
-      }
-    }
-
-    
-    rewrite_message(request, request->mime);
-
-    if(catch(
-      fails = Mail.RobustClient("localhost", 25)->send_message(
-                   request->list["name"] + "-bounces@" + request->getmyhostname(), 
-                   request->list["Subscriptions"]["Subscriber"]["email"], 
-                   (string)request->mime)
-    )) Log.warn("an error occurred while sending a message.");
-
-    if(fails)
-    {
-      Log.debug("the following failures occurred: %O", fails);  
-      array f = Fins.Model.find.subscribers(
-                         (["email": Fins.Model.InCriteria(fails)]));
-      f["bounces"]++;    
-    }
-  }
-  return 250;
-}
-
-void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
-{
-  mime->headers["list-id"] = "<" +  request->list_address + ">";
+    return 550;
 }
 
 int check_destination(string addr)
