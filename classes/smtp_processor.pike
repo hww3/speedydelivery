@@ -103,7 +103,7 @@ int is_valid_address(Mail.MailAddress a)
 
   Log.debug("list: %O, function: %O", l["name"], functionname);
 
-  app->valid_addresses[a->localpart] = ({l["name"], functionname});
+  app->valid_addresses[a->localpart] = ({l["name"], functionname || "__default"});
   
   return 1;
 }

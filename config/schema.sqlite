@@ -5,6 +5,26 @@ create table lists (
    created datetime not null default CURRENT_TIMESTAMP
   );
 
+CREATE TABLE subscriptions
+(
+  id integer PRIMARY KEY,
+  subscriber_id integer NOT NULL,
+  list_id integer NOT NULL,
+  options blob,
+  created datetime NOT NULL default CURRENT_TIMESTAMP
+)
+
+CREATE TABLE subscribers
+(
+  id integer PRIMARY KEY,
+  email varchar(320) not null,
+  name varchar(320),
+  password varchar(24),
+  int bounces,
+  created datetime NOT NULL default CURRENT_TIMESTAMP
+)
+
+
 CREATE TABLE outbound_messages
 (
   id integer PRIMARY KEY,

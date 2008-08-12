@@ -199,6 +199,16 @@ object new_pref(string pref, string value, int type)
 int|array send_message_for_list(SpeedyDelivery.Objects.List list, array recipients, string message)
 {
     return Mail.RobustClient(config["smtp"]->host, 25)->send_message(
-                   list["name"] + "-bounces@" + request->getmyhostname(),
+                   get_bounce_address(list),
                    recipients, message);
+}
+
+string getmyhostname()
+{
+  return config["smtp"]["return_host"] || gethostname();
+}
+
+string get_bounce_address(SpeedyDelivery.Objects.List list)
+{
+  return list["name"] + "-bounces@" + getmyhostname();
 }

@@ -1,8 +1,28 @@
 CREATE TABLE lists (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   name CHAR(16) UNIQUE KEY,
+  options blob,
   description blob,
-  created datetime NOT NULL default '0000-00-00 00:00:00'
+  created datetime NOT NULL default CURRENT_TIMESTAMP
+);
+
+CREATE TABLE subscriptions
+(
+  id int(11) NOT NULL auto_increment PRIMARY KEY,
+  subscriber_id int(11) NOT NULL,
+  list_id int(11) NOT NULL,
+  options blob,
+  created datetime NOT NULL default CURRENT_TIMESTAMP
+);
+
+CREATE TABLE subscribers
+(
+  id int(11) NOT NULL auto_increment PRIMARY KEY,
+  email varchar(320) not null,
+  name varchar(320),
+  password varchar(24),
+  bounces int,
+  created datetime NOT NULL default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE outbound_messages
@@ -12,8 +32,8 @@ CREATE TABLE outbound_messages
   envelope_from varchar(320) not null,
   in_progress int NOT NULL default 0,
   content MEDIUMBLOB,
-  queued datetime NOT NULL default '0000-00-00 00:00:00',
-  last_attempt datetime NOT NULL default '0000-00-00 00:00:00'
+  queued datetime NOT NULL default CURRENT_TIMESTAMP,
+  last_attempt datetime NOT NULL default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE preferences (

@@ -5,8 +5,7 @@ inherit Fins.Model.DataObject;
 void post_define()
 {
 // Add any post configuration logic here
-
- set_alternate_key("name");
-
+  add_field(Fins.Model.MetaDataField("_options", "options"));
+  set_alternate_key("name");
 }
 

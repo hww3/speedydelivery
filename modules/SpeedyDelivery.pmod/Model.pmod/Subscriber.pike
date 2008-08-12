@@ -6,7 +6,7 @@ void post_define()
 {
 // Add any post configuration logic here
 
- set_alternate_key("email");
+  set_alternate_key("email");
 }
 
 void validate(mapping changes, object errors, object i)
