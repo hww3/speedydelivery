@@ -210,5 +210,10 @@ string getmyhostname()
 
 string get_bounce_address(SpeedyDelivery.Objects.List list)
 {
-  return list["name"] + "-bounces@" + getmyhostname();
+  return get_address_for_function(list, "bounces");
+}
+
+string get_address_for_function(SpeedyDelivery.Objects.List list, string func)
+{
+  return list["name"] + (func?("-" + func):"") + "@" + getmyhostname();
 }

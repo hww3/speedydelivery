@@ -6,6 +6,11 @@ inherit Fins.Model.DirectAccessInstance;
 object repository = Fins.Model;
 string type_name = "Subscriber";
 
+Mail.MailAddress get_address()
+{
+  return this["email"];
+}
+
 Subscription get_subscription(List list)
 {
   mixed sa = Fins.Model.find.subscriptions(
