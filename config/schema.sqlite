@@ -29,6 +29,7 @@ CREATE TABLE confirmations
   id int(11) PRIMARY KEY,
   confid varchar(25) not null unique,
   list varchar(16) not null,
+  string conftype varchar(16) not null,
   email varchar(320) not null,
   queued datetime NOT NULL default CURRENT_TIMESTAMP,
 );

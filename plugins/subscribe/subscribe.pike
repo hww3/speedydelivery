@@ -170,7 +170,9 @@ int confirm_subscription(SpeedyDelivery.Request r, string ln, string hc)
   catch( c = Fins.Model.find.confirmations_by_alt(hc));
 
   if(!c) return 1;
- 
+  if(c["conftype"] != r->functionname) return 0;
+  if(c["list"] != r->list["name"]) return 0;
+
   else
   {
     r->list->subscribe(c);
