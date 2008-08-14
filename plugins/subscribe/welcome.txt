@@ -1,0 +1,11 @@
+Welcome to #list.name#!
+
+Mail will be delivered to #subscriber.email#.
+
+You may post to this list by sending email to:
+
+  #list.posting_address#
+
+To unsubscribe, send an email with the word "unsubscribe" in the message body to:
+
+  #list.unsubscribe_address#

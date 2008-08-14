@@ -46,7 +46,28 @@ Subscription subscribe(Confirmation|Subscriber|Mail.MailAddress s)
   }
   else // we have a subscriber object
   {
-    return s->subscribe(this, this["options"]["quiet_subscribe"]);
+    return s->subscribe(this, this["_options"]["quiet_subscribe"]);
+  }
+}
+
+
+Subscription unsubscribe(Confirmation|Subscriber|Mail.MailAddress s)
+{
+  if(object_program(s) == Confirmation)
+  {
+    if(s["list"] == this["name"])
+    {
+      object rx = unsubscribe_via_mailaddress(Mail.MailAddress(s["email"]));
+      s->delete();
+    }
+  }
+  else if(object_program(s) == Mail.MailAddress)
+  {
+    return unsubscribe_via_mailaddress(s);
+  }
+  else // we have a subscriber object
+  {
+    return s->unsubscribe(this, this["_options"]["quiet_unsubscribe"]);
   }
 }
 
@@ -61,4 +82,17 @@ Subscription subscribe_via_mailaddress(Mail.MailAddress m)
   }
   return sx->subscribe(this, this["_options"]["quiet_subscribe"]);
 }
+
+
+Subscription unsubscribe_via_mailaddress(Mail.MailAddress m)
+{
+  Subscriber sx;
+  catch(sx = Fins.Model.find.subscribers_by_alt(m->get_address()));   
+  if(!sx) 
+  {
+    return 0;
+  }
+  return sx->unsubscribe(this, this["_options"]["quiet_unsubscribe"]);
+}
+
 

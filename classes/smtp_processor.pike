@@ -36,7 +36,8 @@ int|array _cb_data(object mime, string sender, array|string recipient,
     if(res1 > res) res = res1;
   }
 
-  return res;
+  werror("returning %d\n", res);
+  return res||250;
 }
 
 int|array handle_message(SpeedyDelivery.Request request)
