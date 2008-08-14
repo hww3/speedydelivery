@@ -17,7 +17,6 @@ Subscription get_subscription(List list)
        (["Subscriber": this, "List": list]));
 
   if(sa && sizeof(sa)) return sa[0];
-
 }
 
 Subscription subscribe(List list, int|void quiet)
@@ -41,7 +40,6 @@ Subscription subscribe(List list, int|void quiet)
              (["list": list, "subscriber": this, "quiet": quiet]))  
     == SpeedyDelivery.abort) return s;
 
-
   return s;
 }
 
@@ -64,3 +62,33 @@ void unsubscribe(List list, int|void quiet)
              (["list": list, "subscriber": this, "quiet": quiet]));  
 }
 
+
+void new_from_address(Mail.MailAddress s)
+{
+  string name = s->name||s->localpart;
+  string address = s->get_address();
+
+  if(name)
+    this["name"] = name;  
+  this["email"] = address;
+
+  this["password"] = gen_password();
+  save();
+
+  master_object->context->app->trigger_event("createNewSubscriber", 
+             (["subscriber": this]));
+}
+
+string gen_password()
+{
+  string q = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  string xx = "";
+
+  for(int x = 0; x < 10; x++)
+  {
+    int qq = random(25);
+    xx += q[qq..qq];
+  }
+
+  return xx;
+}

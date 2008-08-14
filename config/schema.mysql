@@ -36,6 +36,15 @@ CREATE TABLE outbound_messages
   last_attempt datetime NOT NULL default CURRENT_TIMESTAMP
 );
 
+CREATE TABLE confirmations
+(
+  id int(11) NOT NULL auto_increment PRIMARY KEY,
+  confid varchar(25) not null unique key,
+  list varchar(16) not null,
+  email varchar(320) not null,
+  queued timestamp NOT NULL default CURRENT_TIMESTAMP
+);
+
 CREATE TABLE preferences (
   id int(11) NOT NULL auto_increment,
   name char(64) NOT NULL default '',

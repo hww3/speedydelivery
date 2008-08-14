@@ -12,18 +12,26 @@ CREATE TABLE subscriptions
   list_id integer NOT NULL,
   options blob,
   created datetime NOT NULL default CURRENT_TIMESTAMP
-)
+);
 
 CREATE TABLE subscribers
 (
   id integer PRIMARY KEY,
-  email varchar(320) not null,
+  email varchar(320) not null unique,
   name varchar(320),
   password varchar(24),
   int bounces,
   created datetime NOT NULL default CURRENT_TIMESTAMP
-)
+);
 
+CREATE TABLE confirmations
+(
+  id int(11) PRIMARY KEY,
+  confid varchar(25) not null unique,
+  list varchar(16) not null,
+  email varchar(320) not null,
+  queued datetime NOT NULL default CURRENT_TIMESTAMP,
+);
 
 CREATE TABLE outbound_messages
 (

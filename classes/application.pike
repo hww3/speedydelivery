@@ -196,10 +196,16 @@ object new_pref(string pref, string value, int type)
 }
 
 
-int|array send_message_for_list(SpeedyDelivery.Objects.List list, array recipients, string message)
+int|array send_message(string sender, array recipients, string message)
 {
     return Mail.RobustClient(config["smtp"]->host, 25)->send_message(
-                   get_bounce_address(list),
+                   sender,
+                   recipients, message);
+}
+
+int|array send_message_for_list(SpeedyDelivery.Objects.List list, array recipients, string message)
+{
+    return send_message(get_bounce_address(list),
                    recipients, message);
 }
 
@@ -216,4 +222,14 @@ string get_bounce_address(SpeedyDelivery.Objects.List list)
 string get_address_for_function(SpeedyDelivery.Objects.List list, string func)
 {
   return list["name"] + (func?("-" + func):"") + "@" + getmyhostname();
+}
+
+string get_listmaster_address()
+{
+  return config["smtp"]["listmaster"];
+}
+
+int generate_help(SpeedyDelivery.Request r)
+{
+  return 250;
 }
