@@ -31,7 +31,7 @@ CREATE TABLE confirmations
   list varchar(16) not null,
   string conftype varchar(16) not null,
   email varchar(320) not null,
-  queued datetime NOT NULL default CURRENT_TIMESTAMP,
+  queued datetime NOT NULL default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE outbound_messages
@@ -41,9 +41,20 @@ CREATE TABLE outbound_messages
   envelope_from varchar(320) not null,
   in_progress int NOT NULL default 0,
   content MEDIUMBLOB,
-  queued datetime NOT NULL default CURRENT_TIMESTAMP,
-  last_attempt datetime NOT NULL default CURRENT_TIMESTAMP
+  queued timestamp NOT NULL default CURRENT_TIMESTAMP,
+  last_attempt timestamp NOT NULL default CURRENT_TIMESTAMP
 );
+
+CREATE TABLE archived_messages
+(
+  id int(11) NOT NULL PRIMARY KEY,
+  list_id int(11) not null,
+  envelope_from varchar(320) not null,
+  subject varchar(120),
+  content MEDIUMBLOB,
+  archived timestamp NOT NULL default CURRENT_TIMESTAMP
+);
+
 
 CREATE TABLE preferences (
   id integer PRIMARY KEY,
