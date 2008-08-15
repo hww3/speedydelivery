@@ -129,3 +129,10 @@ string _sprintf(mixed t)
 {
   return (name?("\"" + name + "\" "):"") + "<" + get_address() + ">";
 }
+
+mixed cast(mixed t)
+{
+  if(t == "string")
+    return (name?("\"" + name + "\" "):"") + "<" + get_address() + ">";
+  else throw(Error.Generic("Cannot cast MailAddress to " + t + ".\n"));
+}
