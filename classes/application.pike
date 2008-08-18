@@ -142,6 +142,8 @@ int trigger_event(string event, mixed ... args)
   {
     foreach(event_handlers[event];; function h)
     {
+      object o = function_object(h);
+      if(o->list_enableable) continue;
       int res = h(event, @args);
 
       retval|=res; 
