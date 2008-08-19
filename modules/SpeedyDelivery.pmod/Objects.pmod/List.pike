@@ -36,13 +36,13 @@ Subscription subscribe(Confirmation|Subscriber|Mail.MailAddress s)
 }
 
 
-Subscription unsubscribe(Confirmation|Subscriber|Mail.MailAddress s)
+int unsubscribe(Confirmation|Subscriber|Mail.MailAddress s)
 {
   if(object_program(s) == Confirmation)
   {
     if(s["list"] == this["name"])
     {
-      object rx = unsubscribe_via_mailaddress(Mail.MailAddress(s["email"]));
+      unsubscribe_via_mailaddress(Mail.MailAddress(s["email"]));
       s->delete();
     }
   }
@@ -69,7 +69,7 @@ Subscription subscribe_via_mailaddress(Mail.MailAddress m)
 }
 
 
-Subscription unsubscribe_via_mailaddress(Mail.MailAddress m)
+int unsubscribe_via_mailaddress(Mail.MailAddress m)
 {
   Subscriber sx;
   catch(sx = Fins.Model.find.subscribers_by_alt(m->get_address()));   

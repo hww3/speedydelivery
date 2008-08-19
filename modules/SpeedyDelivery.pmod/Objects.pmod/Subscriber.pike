@@ -43,7 +43,7 @@ Subscription subscribe(List list, int|void quiet)
   return s;
 }
 
-void unsubscribe(List list, int|void quiet)
+int unsubscribe(List list, int|void quiet)
 {
   object s;
 
@@ -53,13 +53,14 @@ void unsubscribe(List list, int|void quiet)
 
   if(master_object->context->app->trigger_event("preUnsubscribe", 
              (["list": list, "subscriber": this, "quiet": quiet]))
-    == SpeedyDelivery.abort) return;
+    == SpeedyDelivery.abort) return SpeedyDelivery.abort;
 
 
   s->delete();
 
-  master_object->context->app->trigger_event("postUnsubscribe", 
+  return master_object->context->app->trigger_event("postUnsubscribe", 
              (["list": list, "subscriber": this, "quiet": quiet]));  
+
 }
 
 
