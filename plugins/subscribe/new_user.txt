@@ -2,8 +2,8 @@ welcome to SpeedyDelivery!
 
 A new account has been created for you using the email address:
 
-#user.email#
+<%$user.email%>
 
 Your password is:
 
-#user.password#
+<%$user.password%>
