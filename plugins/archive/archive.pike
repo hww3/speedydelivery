@@ -5,6 +5,7 @@ constant name = "archive support";
 constant description = "support for archived article storage";
 
 int _enabled = 1;
+int checked_exists = 0;
 
 mapping query_event_callers()
 {
@@ -22,9 +23,90 @@ int archive_message(string eventname, mapping event, mixed ... args)
    m = SpeedyDelivery.Objects.Archived_message();
    m["List"] = event->request->list;
    m["envelope_from"] = (string)event->request->sender;
+   m["messageid"] = (string)event->request->mime->headers["message-id"];
+   if(event->request->mime->headers["in-reply-to"])
+     m["referenceid"] = (string)event->request->mime->headers["in-reply-to"];
    m["subject"] = event->mime->headers->subject;
    m["content"] = (string)event->mime;
    m->save();
 
+   updateIndex(eventname, event, m);
+
    return SpeedyDelivery.ok;
 }
+
+string textify(string html)
+{
+  object p = Parser.HTML();
+  p->_set_tag_callback(lambda(object parser, mixed val){return " ";});
+
+  return p->finish(html)->read();
+}
+
+string make_excerpt(string c)
+{
+        if(sizeof(c)<500)
+          return c;
+   int loc = search(c, " ", 499);
+
+        // we don't have a space?
+   if(loc == -1)
+        {
+                c = c[0..499] + "...";
+        }
+        else
+        {
+                c = c[..loc] + "...";
+        }
+
+        return c;
+}
+
+
+int updateIndex(string eventname, mapping event, object message)
+{
+  call_out(Thread.Thread, 0, doUpdateIndex, eventname, event, message);
+
+  return 0;
+}
+
+void doUpdateIndex(string eventname, mapping event, object message)
+{
+  mapping p = app->config["full_text"];
+  if(!p)
+  {
+     Log.debug("no full text configuration, skipping.");
+     return;
+  }
+
+  if(!p["url"])
+  {
+    Log.debug("no full text url provided, skipping.");
+    return;
+  }
+
+  object c = Protocols.XMLRPC.Client(p["url"] + "/update/");
+
+  string indexname = "SpeedyDelivery_" + event->request->list["name"];
+
+  if(!checked_exists)
+  {
+    int e = c["exists"](indexname)[0];
+    if(!e)
+      c["new"](indexname);
+    checked_exists = 1;
+  }
+
+  int t;
+  t = time();
+  t = Calendar.dwim_time(event->request->mime->headers->date)->unix_time();
+
+  string content = textify(event->request->mime->getdata());
+  c["add"](indexname, event->request->mime->headers->subject, 
+      t, content,
+      (string)message["id"],
+      make_excerpt(content),      
+      "text/mime-message");
+}
+
+

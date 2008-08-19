@@ -1,4 +1,4 @@
-Successfully unsubscribed to #list.name#!
+Successfully unsubscribed to <%$list.name%>!
 
-You were previously subscribed via #subscriber.email#.
+You were previously subscribed via <%$subscriber.email%>.
 

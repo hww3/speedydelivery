@@ -1,10 +1,10 @@
 Please confirm your unsubscription to the following list:
 
- #list.name#
+ <%$list.name%>
 
 You may do this by replying to this message, and ensuring that
 the following line is included intact:
 
- CONFIRM #list.name# #confirmation.confid# 
+ CONFIRM <%$list.name%> <%$confirmation.confid%> 
 
 

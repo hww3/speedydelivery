@@ -70,20 +70,12 @@ int generate_confirmation(SpeedyDelivery.Request r)
   string msg = r->list["_options"]["confirm_message"] ||
 #string "confirm.txt";
 
-  mapping vals = ([]);
-  mapping m = (mapping)r->list;
-  foreach(m; mixed k; mixed v)
-   if(stringp(v))
-     vals["#list." + k + "#"] = (string)v;
+  object v = app->view->get_string_view(msg);
 
-  m = (mapping)c;
-  foreach(m; mixed k; mixed v)
-   if(stringp(v))
-     vals["#confirmation." + k + "#"] = (string)v;
+  v->add("list", r->list);
+  v->add("confirmation", c);
 
-  msg = replace(msg, indices(vals), values(vals));
-
-  mime->setdata(msg);
+  mime->setdata(v->render());
   app->send_message_for_list(r->list, ({r->sender->get_address()}), (string)mime);
 
   return 250;
@@ -110,22 +102,16 @@ int after_unsubscribe(string eventname, mapping event, mixed ... args)
     string msg =        event->list["_options"]["goodbye_message"] ||
 #string "goodbye.txt";
 
-    mapping vals = ([]);
-    mapping m = (mapping)event->list;
-    foreach(m; mixed k; mixed v)
-     if(stringp(v))
-      vals["#list." + k + "#"] = (string)v;
-    m = (mapping)event->subscriber;
-    foreach(m; mixed k; mixed v)
-     if(stringp(v))
-      vals["#subscriber." + k + "#"] = (string)v;
+//    vals["#list.posting_address#"] = app->get_address_for_function(event->list, 0);
+//    vals["#list.unsubscribe_address#"] = app->get_address_for_function(event->list, "unsubscribe");
 
-    vals["#list.posting_address#"] = app->get_address_for_function(event->list, 0);
-    vals["#list.unsubscribe_address#"] = app->get_address_for_function(event->list, "unsubscribe");
 
-    msg = replace(msg, indices(vals), values(vals));
+    object v = app->view->get_string_view(msg);
 
-    mime->setdata(msg);
+    v->add("list", event->list);
+    v->add("subscriber", event->subscriber);
+
+    mime->setdata(v->render());
     app->send_message_for_list(event->list, ({event->subscriber->get_address()}), (string)mime);
   }
 }

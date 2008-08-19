@@ -33,7 +33,7 @@ void load_plugins()
   {
     if(f == "CVS") continue;
 		
-   Log.info("Considering plugin " + f);
+   Log.debug("Considering plugin " + f);
    Stdio.Stat stat = file_stat(Stdio.append_path(plugindir, f));
 //        Log.info("STAT: %O %O", Stdio.append_path(plugindir, f), stat);
    if(stat && stat->isdir)
@@ -47,7 +47,7 @@ void load_plugins()
      foreach(glob("*.pike", get_dir(pd));; string file)
      {
        program p = (program)combine_path(pd, file);
-//				Log.info("File: %O", p);
+	Log.debug("Plugin Program: %O", p);
        if(Program.implements(p, SpeedyDelivery.PluginInstaller) && !installer)
          installer = p(this);
        else if(Program.implements(p, SpeedyDelivery.Plugin) && !module)
@@ -58,15 +58,13 @@ void load_plugins()
      }
 			
      if(!module || module->name =="")
-     {
-        Log.error("Module %s has no name, not loading.", f);
         continue;
-      }
 			
       if(installer && functionp(installer->install) && module->installed())
         installer->install(Filesystem.System(pd));
-                        
+   
       plugins[module->name] = module;
+      Log.info("Registered plugin: " + module->name);
     }
   }
 	
