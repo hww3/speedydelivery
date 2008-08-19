@@ -17,10 +17,18 @@ the sections below.
 You will be sent email requesting confirmation, to prevent others 
 from gratuitously subscribing you.
 <form action="<%action_url controller="/commands" action="subscribe" args="$list.name"%>" method="post">
-Email: <input type="string" name="email"/>
+<table>
+<tr>
+<td>
+Email: 
+</td>
+<td><input type="string" name="email"/>
+</td>
+</tr>
 <tr>
 <td>Your name (optional):</td>
 <td><input type="string" name="name"/></td>
 </tr>
-
+</table>
+<input type="submit" name="submit" value="Submit"/>
 </form>
