@@ -6,6 +6,17 @@ void post_define()
 {
 // Add any post configuration logic here
   add_field(Fins.Model.MetaDataField("_options", "options"));
+  add_field(Fins.Model.TransformField("_addresses", "name", gen_addresses));
   set_alternate_key("name");
 }
 
+mapping gen_addresses(mixed n, object i)
+{
+   mapping a = ([]);
+
+   foreach(context->app->destination_handlers; string k; mixed v)
+   {
+     a[k] = context->app->get_address_for_function(i, k);
+   }
+ return a;
+}
