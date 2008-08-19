@@ -1,0 +1,26 @@
+<b>About <%$list.name%></b>
+<br/>
+<%autoformat var="$list.description"%>
+<hr/>
+<b>Using <%$list.name%></b>
+<br/>
+To post a message to all the list members, send email to 
+<a href="mailto:<%$list._addresses.__default%>"><%$list._addresses.__default%></a>.
+<p/>
+You can subscribe to the list, or change your existing subscription, in 
+the sections below. 
+<hr/>
+<b>Subscribing to <%$list.name%></b>
+<br/>
+ Subscribe to <%$list.name%> by filling out the following form.
+<p/>
+You will be sent email requesting confirmation, to prevent others 
+from gratuitously subscribing you.
+<form action="<%action_url controller="/commands" action="subscribe" args="$list.name"%>" method="post">
+Email: <input type="string" name="email"/>
+<tr>
+<td>Your name (optional):</td>
+<td><input type="string" name="name"/></td>
+</tr>
+
+</form>

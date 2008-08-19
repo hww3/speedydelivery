@@ -1,16 +1,19 @@
 
-inherit Fins.FinsController;
-void index(object id, object response, mixed ... args)
+inherit Fins.DocController;
+
+Fins.FinsController listinfo;
+Fins.FinsController commands;
+
+void start()
 {
-  string req = sprintf("%O", mkmapping(indices(id), values(id)));
-  string con = master()->describe_object(this);
-  string method = function_name(backtrace()[-1][2]);
-  object v = view->get_view("internal:index");
-
-  v->add("appname", "SpeedyDelivery");
-  v->add("request", req);
-  v->add("controller", con);
-  v->add("method", method);
-
-  response->set_view(v);
+  listinfo = load_controller("list_controller");
+  commands = load_controller("command_controller");
 }
+
+
+void index(object id, object response, object view, mixed ... args)
+{
+  view->add("lists", Fins.Model.find.lists(([]),
+           Fins.Model.Criteria("ORDER BY name DESC")));
+}
+

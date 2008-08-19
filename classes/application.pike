@@ -221,6 +221,8 @@ string get_bounce_address(SpeedyDelivery.Objects.List list)
 
 string get_address_for_function(SpeedyDelivery.Objects.List list, string func)
 {
+  if(func == "__default") func = 0;
+
   return list["name"] + (func?("-" + func):"") + "@" + getmyhostname();
 }
 
