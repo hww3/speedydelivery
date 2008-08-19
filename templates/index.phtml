@@ -1,3 +1,14 @@
+<b>Lists available at this server</b>
+<hr/>
+<table>
 <%foreach var="$lists" val="list"%>
-<%action_link controller="/listinfo" args="$list.name"%><%$list.name%></a><br>
+<tr>
+<td>
+  <%action_link controller="/listinfo" args="$list.name"%><%$list.name%></a>
+</td>
+<td>
+<%autoformat var="$list.description"%>
+</td>
+</tr>
 <%end %>
+</table>
