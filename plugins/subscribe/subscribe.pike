@@ -42,10 +42,7 @@ int handle_subscribe(SpeedyDelivery.Request r)
     return app->generate_help(r);
   }
 
-  SpeedyDelivery.Objects.Subscriber subscriber;
-
-  return r->list->request_subscription(r->sender->get_address());
-
+  return r->list->request_subscription(r->sender);
 }
 
 int new_subscriber(string eventname, mapping event, mixed ... args)

@@ -15,6 +15,27 @@ Subscription get_subscription(Subscriber s)
   if(sa && sizeof(sa)) return sa[0];
 }
 
+int request_unsubscription(string|Mail.MailAddress email)
+{
+  Mail.MailAddress a;
+  if(stringp(email))
+    a = Mail.MailAddress("<" + email + ">");
+  else
+    a = email;
+
+  SpeedyDelivery.Objects.Subscriber subscriber;
+
+  catch(subscriber =
+        Fins.Model.find.subscribers_by_alt(a->get_address()));
+
+  if(!subscriber || !get_subscription(subscriber))
+  {
+    Log.info("sending notice of invalid unsubscription attempt.");
+    return generate_invalid_unsubscription(a);
+  }
+
+}
+
 int request_subscription(string|Mail.MailAddress email, string|void name)
 {
   Mail.MailAddress a;
@@ -31,7 +52,7 @@ int request_subscription(string|Mail.MailAddress email, string|void name)
   if(subscriber && get_subscription(subscriber))
   {
     Log.info("sending notice of duplicate subscription attempt.");
-    return generate_duplicate_subscription();
+    return generate_duplicate_subscription(a);
   }
 
   return generate_subscription_confirmation(a);
@@ -141,6 +162,35 @@ int trigger_event(string event, mixed ... args)
   return retval;
 }
 
+int generate_unsubscription_confirmation(Mail.MailAddress sender)
+{
+  SpeedyDelivery.Objects.Confirmation c;
+
+  Log.info("generating confirmation for %s\n", this["name"]);
+
+  c = SpeedyDelivery.Objects.Confirmation();
+  c->new(this, sender, "unsubscribe");
+
+  object mime = MIME.Message();
+  mime->headers["subject"] = "Confirm Unsubscription to " + this["name"];
+  mime->headers["to"] = sender->get_address();
+  mime->headers["from"] = master_object->context->app->get_address_for_function(this, "unsubscribe");
+
+  string msg = this["_options"]["confirm_message"] ||
+#string "../../../plugins/unsubscribe/confirm.txt";
+
+  object v = app->view->get_string_view(msg);
+
+  v->add("list", this);
+  v->add("confirmation", c);
+
+  mime->setdata(v->render());
+  master_object->context->app->send_message_for_list(this, ({r->sender->get_address()}), (string)mime);
+
+  return 250;
+}
+
+
 int generate_subscription_confirmation(Mail.MailAddress sender)
 {
   SpeedyDelivery.Objects.Confirmation c;
@@ -165,15 +215,22 @@ int generate_subscription_confirmation(Mail.MailAddress sender)
   v->add("confirmation", c);
 
   mime->setdata(v->render());
-
   master_object->context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
 
   return 250;
 }
 
-int generate_duplicate_subscription()
+int generate_duplicate_subscription(Mail.MailAddress a)
 {
+  // TODO: actually do it
   Log.info("generating duplicate subscription notice.");
+  return 260;
+}
+
+int generate_duplicate_unsubscription(Mail.MailAddress a)
+{
+  // TODO: actually do it
+  Log.info("generating duplicate unsubscription notice.");
   return 260;
 }
 
