@@ -44,17 +44,8 @@ int handle_subscribe(SpeedyDelivery.Request r)
 
   SpeedyDelivery.Objects.Subscriber subscriber;
 
-  catch(subscriber = 
-        Fins.Model.find.subscribers_by_alt(r->sender->get_address()));
-  
-  if(subscriber && r->list->get_subscription(subscriber))
-  {
-    Log.info("sending notice of duplicate subscription attempt.");
-    return generate_duplicate_subscription(r);
-  }
+  return r->list->request_subscription(r->sender->get_address());
 
-
-  return generate_confirmation(r);
 }
 
 int new_subscriber(string eventname, mapping event, mixed ... args)
@@ -80,40 +71,6 @@ int new_subscriber(string eventname, mapping event, mixed ... args)
   event->subscriber->get_address());
 
   app->send_message( app->get_listmaster_address(), ({event->subscriber->get_address()}), (string)mime);
-}
-
-int generate_confirmation(SpeedyDelivery.Request r)
-{
-  SpeedyDelivery.Objects.Confirmation c;
-
-  Log.info("generating confirmation for %s\n", r->list["name"]);
-
-  c = SpeedyDelivery.Objects.Confirmation();
-  c->new_from_request(r);
-
-  object mime = MIME.Message();
-  mime->headers["subject"] = "Confirm Subscription to " + r->list["name"];
-  mime->headers["to"] = r->sender->get_address();
-  mime->headers["from"] = app->get_address_for_function(r->list, "subscribe");
-
-  string msg = r->list["_options"]["confirm_message"] ||
-#string "confirm.txt";
-
-  object v = app->view->get_string_view(msg);
-
-  v->add("list", r->list);
-  v->add("confirmation", c);
-
-  mime->setdata(v->render());
-
-  app->send_message_for_list(r->list, ({r->sender->get_address()}), (string)mime);
-
-  return 250;
-}
-
-int generate_duplicate_subscription(SpeedyDelivery.Request r)
-{
-  return 250;
 }
 
 int after_subscribe(string eventname, mapping event, mixed ... args)

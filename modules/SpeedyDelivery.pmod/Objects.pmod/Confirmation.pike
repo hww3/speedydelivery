@@ -4,13 +4,18 @@ inherit Fins.Model.DirectAccessInstance;
 object repository = Fins.Model;
 string type_name = "Confirmation";
 
+void new(SpeedyDelivery.Objects.List list, Mail.MailAddress sender, string functionname)
+{
+  this["list"] = list["name"];
+  this["email"] = sprintf("%O", sender);
+  this["confid"] = gen_confid();
+  this["conftype"] = functionname;
+  save();
+}
+
 void new_from_request(SpeedyDelivery.Request r)
 {
-  this["list"] = r->list["name"];
-  this["email"] = sprintf("%O", r->sender);
-  this["confid"] = gen_confid();  
-  this["conftype"] = r->functionname;
-  save();
+  new(r->list["name"], r->sender, r->functionname);
 }
 
 string gen_confid()

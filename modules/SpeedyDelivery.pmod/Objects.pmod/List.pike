@@ -15,6 +15,28 @@ Subscription get_subscription(Subscriber s)
   if(sa && sizeof(sa)) return sa[0];
 }
 
+int request_subscription(string|Mail.MailAddress email, string|void name)
+{
+  Mail.MailAddress a;
+  if(stringp(email))
+    a = Mail.MailAddress("\"" + (name||"") + "\" <" + email + ">");
+  else
+    a = email;
+
+  object subscriber;
+
+  catch(subscriber =
+        Fins.Model.find.subscribers_by_alt(a->get_address()));
+
+  if(subscriber && get_subscription(subscriber))
+  {
+    Log.info("sending notice of duplicate subscription attempt.");
+    return generate_duplicate_subscription();
+  }
+
+  return generate_subscription_confirmation(a);
+}
+
 Subscription subscribe(Confirmation|Subscriber|Mail.MailAddress s)
 {
   if(object_program(s) == Confirmation)
@@ -117,5 +139,41 @@ int trigger_event(string event, mixed ... args)
     }
   }
   return retval;
+}
+
+int generate_subscription_confirmation(Mail.MailAddress sender)
+{
+  SpeedyDelivery.Objects.Confirmation c;
+
+  Log.info("generating confirmation for %s\n", this["name"]);
+
+  c = SpeedyDelivery.Objects.Confirmation();
+// void new(SpeedyDelivery.Objects.List list, Mail.MailAddress sender, string functionname)
+  c->new(this, sender, "subscribe");
+
+  object mime = MIME.Message();
+  mime->headers["subject"] = "Confirm Subscription to " + this["name"];
+  mime->headers["to"] = sender->get_address();
+  mime->headers["from"] = master_object->context->app->get_address_for_function(this, "subscribe");
+
+  string msg = this["_options"]["confirm_message"] ||
+#string "../../../plugins/subscribe/confirm.txt";
+
+  object v = master_object->context->app->view->get_string_view(msg);
+
+  v->add("list", this);
+  v->add("confirmation", c);
+
+  mime->setdata(v->render());
+
+  master_object->context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
+
+  return 250;
+}
+
+int generate_duplicate_subscription()
+{
+  Log.info("generating duplicate subscription notice.");
+  return 260;
 }
 
