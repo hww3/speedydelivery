@@ -8,6 +8,9 @@
 <br/>
 To post a message to all the list members, send email to 
 <a href="mailto:<%$list._addresses.__default%>"><%$list._addresses.__default%></a>.
+<%if data["list"]["_options"]["reject_non_subscribers"] == 1 %>
+<i>Note: this list's policy prohibits non-subscribers from posting.</i>
+<%endif%>
 <p/>
 You can subscribe to the list, or change your existing subscription, in 
 the sections below. 
@@ -31,6 +34,32 @@ Email:
 <td>Your name (optional):</td>
 <td><input type="string" name="name"/></td>
 </tr>
+<tr>
+<td>Digest mode:</td>
+<td><input type="radio" name="digest" value="1"/> Yes 
+<input type="radio" name="digest" value="0" checked="1"/> No</td>
+</tr>
 </table>
 <input type="submit" name="submit" value="Submit"/>
 </form>
+
+<hr/>
+<b>Unsubscribing from <%$list.name%></b>
+<br/>
+ Unsubscribe from <%$list.name%> by filling out the following form.
+<p/>
+You will be sent email requesting confirmation, to prevent others 
+from gratuitously unsubscribing you.
+<form action="<%action_url controller="/commands" action="unsubscribe" args="$list.name"%>" method="post">
+<table>
+<tr>
+<td>
+Email: 
+</td>
+<td><input type="string" name="email"/>
+</td>
+</tr>
+</table>
+<input type="submit" name="submit" value="Submit"/>
+</form>
+

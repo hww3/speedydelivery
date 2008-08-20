@@ -34,6 +34,8 @@ int request_unsubscription(string|Mail.MailAddress email)
     return generate_invalid_unsubscription(a);
   }
 
+  return generate_unsubscription_confirmation(a);
+
 }
 
 int request_subscription(string|Mail.MailAddress email, string|void name)
@@ -179,13 +181,13 @@ int generate_unsubscription_confirmation(Mail.MailAddress sender)
   string msg = this["_options"]["confirm_message"] ||
 #string "../../../plugins/unsubscribe/confirm.txt";
 
-  object v = app->view->get_string_view(msg);
+  object v = master_object->context->app->view->get_string_view(msg);
 
   v->add("list", this);
   v->add("confirmation", c);
 
   mime->setdata(v->render());
-  master_object->context->app->send_message_for_list(this, ({r->sender->get_address()}), (string)mime);
+  master_object->context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
 
   return 250;
 }
@@ -224,6 +226,13 @@ int generate_duplicate_subscription(Mail.MailAddress a)
 {
   // TODO: actually do it
   Log.info("generating duplicate subscription notice.");
+  return 260;
+}
+
+int generate_invalid_unsubscription(Mail.MailAddress a)
+{
+  // TODO: actually do it
+  Log.info("generating invalid unsubscription notice.");
   return 260;
 }
 
