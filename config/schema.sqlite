@@ -55,6 +55,7 @@ CREATE TABLE archived_messages
   subject varchar(120),
   messageid varchar(120) not null,
   referenceid varchar(120),
+  digested int(1) not null default 0,
   content MEDIUMBLOB,
   archived timestamp NOT NULL default CURRENT_TIMESTAMP
 );
