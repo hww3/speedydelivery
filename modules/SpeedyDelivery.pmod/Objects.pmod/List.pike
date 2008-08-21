@@ -38,7 +38,7 @@ int request_unsubscription(string|Mail.MailAddress email)
 
 }
 
-int request_subscription(string|Mail.MailAddress email, string|void name)
+int request_subscription(string|Mail.MailAddress email, string|void name, int|void digest)
 {
   Mail.MailAddress a;
   if(stringp(email))
@@ -57,26 +57,26 @@ int request_subscription(string|Mail.MailAddress email, string|void name)
     return generate_duplicate_subscription(a);
   }
 
-  return generate_subscription_confirmation(a);
+  return generate_subscription_confirmation(a, digest);
 }
 
-Subscription subscribe(Confirmation|Subscriber|Mail.MailAddress s)
+Subscription subscribe(Confirmation|Subscriber|Mail.MailAddress s, int|void digest)
 {
   if(object_program(s) == Confirmation)
   {
     if(s["list"] == this["name"])
     {
-      object rx = subscribe_via_mailaddress(Mail.MailAddress(s["email"]));
+      object rx = subscribe_via_mailaddress(Mail.MailAddress(s["email"]), s["_options"]["digest"]);
       s->delete();
     }
   }
   else if(object_program(s) == Mail.MailAddress)
   {
-    return subscribe_via_mailaddress(s);
+    return subscribe_via_mailaddress(s, digest);
   }
   else // we have a subscriber object
   {
-    return s->subscribe(this, this["_options"]["quiet_subscribe"]);
+    return s->subscribe(this, this["_options"]["quiet_subscribe"], digest);
   }
 }
 
@@ -101,7 +101,7 @@ int unsubscribe(Confirmation|Subscriber|Mail.MailAddress s)
   }
 }
 
-Subscription subscribe_via_mailaddress(Mail.MailAddress m)
+Subscription subscribe_via_mailaddress(Mail.MailAddress m, int|void digest)
 {
   Subscriber sx;
   catch(sx = Fins.Model.find.subscribers_by_alt(m->get_address()));   
@@ -110,7 +110,10 @@ Subscription subscribe_via_mailaddress(Mail.MailAddress m)
     sx = Subscriber();
     sx->new_from_address(m);
   }
-  return sx->subscribe(this, this["_options"]["quiet_subscribe"]);
+  object subscription = sx->subscribe(this, this["_options"]["quiet_subscribe"]);
+  if(digest)
+    subscription["mode"] = "D";
+  return subscription;
 }
 
 
@@ -193,7 +196,7 @@ int generate_unsubscription_confirmation(Mail.MailAddress sender)
 }
 
 
-int generate_subscription_confirmation(Mail.MailAddress sender)
+int generate_subscription_confirmation(Mail.MailAddress sender, int|void digest)
 {
   SpeedyDelivery.Objects.Confirmation c;
 
@@ -201,7 +204,7 @@ int generate_subscription_confirmation(Mail.MailAddress sender)
 
   c = SpeedyDelivery.Objects.Confirmation();
 // void new(SpeedyDelivery.Objects.List list, Mail.MailAddress sender, string functionname)
-  c->new(this, sender, "subscribe");
+  c->new(this, sender, "subscribe", digest);
 
   object mime = MIME.Message();
   mime->headers["subject"] = "Confirm Subscription to " + this["name"];

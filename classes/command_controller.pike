@@ -4,7 +4,7 @@ int __quiet = 1;
 void subscribe(object id, object response, object view, mixed args)
 {
   object list = Fins.Model.find.lists_by_alt(args[0]);
-  int r = list->request_subscription(id->variables->email, id->variables->name);
+  int r = list->request_subscription(id->variables->email, id->variables->name, (int)id->variables->digest);
 
   if(r == 260)
     response->flash("You are already subscribed to " + list["name"] + ".");

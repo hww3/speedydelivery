@@ -17,9 +17,24 @@ mapping query_destination_callers()
   return (["subscribe": handle_subscribe]);
 }
 
+string getfullbodytext(object mime, string|void s)
+{
+  if(!s) s = "";
+
+  s = mime->getdata();
+
+  if(mime->body_parts)
+  {
+    foreach(mime->body_parts;; object nm)
+      s = getfullbodytext(nm, s);
+  }
+
+  return s;
+}
+
 int handle_subscribe(SpeedyDelivery.Request r)
 {
-  string s = r->mime->headers->subject + " " + r->mime->getdata();
+  string s = r->mime->headers->subject + " " + getfullbodytext(r->mime);
 
   // format of the confirmation message is:
   // (space)CONFIRM(space)list-name(space)confirmcode(whitespace)
@@ -32,7 +47,7 @@ int handle_subscribe(SpeedyDelivery.Request r)
     return confirm_subscription(r, ln, hc);
   }
 
-  array sa = replace(lower_case(s), 
+  array sa = replace(lower_case(Tools.String.textify(s)), 
                     ({"\r", "\n", "\t", ".", ",", "!", "?"}), 
                     ({" ", " ", " ", " ", " ", " ", " "}))/" ";
 

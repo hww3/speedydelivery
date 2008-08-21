@@ -11,6 +11,7 @@ CREATE TABLE subscriptions
   subscriber_id integer NOT NULL,
   list_id integer NOT NULL,
   options blob,
+  char(1) mode not null default 'M',
   created datetime NOT NULL default CURRENT_TIMESTAMP
 );
 
@@ -31,6 +32,7 @@ CREATE TABLE confirmations
   list varchar(16) not null,
   string conftype varchar(16) not null,
   email varchar(320) not null,
+  options blob,
   queued datetime NOT NULL default CURRENT_TIMESTAMP
 );
 

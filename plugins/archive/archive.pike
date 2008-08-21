@@ -35,34 +35,6 @@ int archive_message(string eventname, mapping event, mixed ... args)
    return SpeedyDelivery.ok;
 }
 
-string textify(string html)
-{
-  object p = Parser.HTML();
-  p->_set_tag_callback(lambda(object parser, mixed val){return " ";});
-
-  return p->finish(html)->read();
-}
-
-string make_excerpt(string c)
-{
-        if(sizeof(c)<500)
-          return c;
-   int loc = search(c, " ", 499);
-
-        // we don't have a space?
-   if(loc == -1)
-        {
-                c = c[0..499] + "...";
-        }
-        else
-        {
-                c = c[..loc] + "...";
-        }
-
-        return c;
-}
-
-
 int updateIndex(string eventname, mapping event, object message)
 {
   call_out(Thread.Thread, 0, doUpdateIndex, eventname, event, message);
@@ -101,11 +73,11 @@ void doUpdateIndex(string eventname, mapping event, object message)
   t = time();
   t = Calendar.dwim_time(event->request->mime->headers->date)->unix_time();
 
-  string content = textify(event->request->mime->getdata());
+  string content = Tools.String.textify(event->request->mime->getdata());
   c["add"](indexname, event->request->mime->headers->subject, 
       t, content,
       (string)message["id"],
-      make_excerpt(content),      
+      Tools.String.make_excerpt(content),      
       "text/mime-message");
 }
 

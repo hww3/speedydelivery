@@ -19,7 +19,7 @@ Subscription get_subscription(List list)
   if(sa && sizeof(sa)) return sa[0];
 }
 
-Subscription subscribe(List list, int|void quiet)
+Subscription subscribe(List list, int|void quiet, int|void digest)
 {
   object s;
 
@@ -34,6 +34,8 @@ Subscription subscribe(List list, int|void quiet)
   s = Subscription();
   s["Subscriber"] = this;
   s["List"] = list;
+  if(digest)
+    s["mode"] = "D";
   s->save();
 
   if(master_object->context->app->trigger_event("postSubscribe", 

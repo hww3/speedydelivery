@@ -17,9 +17,24 @@ mapping query_destination_callers()
   return (["unsubscribe": handle_unsubscribe]);
 }
 
+string getfullbodytext(object mime, string|void s)
+{
+  if(!s) s = "";
+
+  s = mime->getdata();
+
+  if(mime->body_parts)
+  {
+    foreach(mime->body_parts;; object nm)
+      s = getfullbodytext(nm, s);
+  }
+
+  return s;
+}
+
 int handle_unsubscribe(SpeedyDelivery.Request r)
 {
-  string s = " " + r->mime->headers->subject + " " + r->mime->getdata();
+  string s = r->mime->headers->subject + " " + getfullbodytext(r->mime);
 
   // format of the confirmation message is:
   // (space)CONFIRM(space)list-name(space)confirmcode(whitespace)
@@ -32,7 +47,7 @@ int handle_unsubscribe(SpeedyDelivery.Request r)
     return confirm_unsubscription(r, ln, hc);
   }
 
-  if(search(lower_case(s), "unsubscribe") == -1) // we don't have the magic word!
+  if(search(lower_case(Tools.String.textify(s)), "unsubscribe") == -1) // we don't have the magic word!
   {
     Log.info("sending help to wandering unsubscriber.");
     return app->generate_help(r);

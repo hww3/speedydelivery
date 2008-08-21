@@ -6,6 +6,7 @@ void post_define()
 {
 // Add any post configuration logic here
 
+  add_field(Fins.Model.MetaDataField("_options", "options"));
   set_alternate_key("confid");
 
 }
