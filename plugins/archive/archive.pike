@@ -73,7 +73,9 @@ void doUpdateIndex(string eventname, mapping event, object message)
   t = time();
   t = Calendar.dwim_time(event->request->mime->headers->date)->unix_time();
 
-  string content = Tools.String.textify(event->request->mime->getdata());
+  string content;
+   content = Tools.String.textify(
+                SpeedyDelivery.getfullbodytext(event->request->mime, content));
   c["add"](indexname, event->request->mime->headers->subject, 
       t, content,
       (string)message["id"],

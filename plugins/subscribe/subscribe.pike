@@ -17,24 +17,10 @@ mapping query_destination_callers()
   return (["subscribe": handle_subscribe]);
 }
 
-string getfullbodytext(object mime, string|void s)
-{
-  if(!s) s = "";
-
-  s = mime->getdata();
-
-  if(mime->body_parts)
-  {
-    foreach(mime->body_parts;; object nm)
-      s = getfullbodytext(nm, s);
-  }
-
-  return s;
-}
-
 int handle_subscribe(SpeedyDelivery.Request r)
 {
-  string s = r->mime->headers->subject + " " + getfullbodytext(r->mime);
+  string s = r->mime->headers->subject + " " + 
+    SpeedyDelivery.getfullbodytext(r->mime);
 
   // format of the confirmation message is:
   // (space)CONFIRM(space)list-name(space)confirmcode(whitespace)
