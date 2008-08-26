@@ -19,7 +19,7 @@ CREATE TABLE subscriptions
 CREATE TABLE subscribers
 (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
-  email varchar(320) not null,
+  email varchar(320) not null UNIQUE KEY,
   name varchar(320),
   password varchar(24),
   bounces int,

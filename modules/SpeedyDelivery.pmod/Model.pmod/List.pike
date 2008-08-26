@@ -7,7 +7,7 @@ void post_define()
 // Add any post configuration logic here
   add_field(Fins.Model.MetaDataField("_options", "options"));
   add_field(Fins.Model.TransformField("_addresses", "name", gen_addresses));
-  set_alternate_key("name");
+//  set_alternate_key("name");
 }
 
 mapping gen_addresses(mixed n, object i)
