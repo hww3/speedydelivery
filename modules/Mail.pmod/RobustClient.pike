@@ -20,23 +20,30 @@ inherit Protocols.SMTP.Client;
 
   int|array(string) send_message(string from, array(string) to, string body)
   {
+    array qi = create_queue_items(from, to, body);
+    return process_queue_items(qi);
+  }
+
+  int|array(string) process_queue_items(array qi)
+  {
     array failures = ({});
     int rv;
 
-    array qi = create_queue_items(from, to, body);
-
+    foreach(qi, object i) 
+    {
+      string from = i["envelope_from"];
+      string to = i["envelope_to"];
+      string body = i["content"];
     rv = cmd("MAIL FROM: <" + from + ">");
     Log.debug("got " + rv + " on MAIL FROM");
 
     if(rv > 400 && rv < 499) // temporary failure, retry later.
     {
-        qi->set_atomic((["last_attempt": Calendar.now()->second(),
+        i->set_atomic((["last_attempt": Calendar.now()->second(),
                       "in_progress":  0 ]));
-        return 0;
+        continue;
     }
 
-    foreach(qi, object i) 
-    {
       rv = cmd("RCPT TO: <" + i["envelope_to"] + ">");
       Log.debug("got " + rv + " on RCPT TO");
       if(rv >= 500) // permanent failure
@@ -56,19 +63,18 @@ inherit Protocols.SMTP.Client;
       else
       {
       }
-    }
 
     rv = cmd("DATA");
 
     Log.debug("got " + rv + " on DATA");
     if(rv >= 500) // permanent failure
     {
-      failures += qi["envelope_to"];
-      qi->delete();
+      failures += i["envelope_to"];
+      i->delete();
     }
     else if(rv >= 400 && rv <= 499) // temporary failure
     {     
-      qi->set_atomic((["last_attempt": Calendar.now()->second(),
+      i->set_atomic((["last_attempt": Calendar.now()->second(),
                       "in_progress":  0 ]));
     }
 
@@ -90,19 +96,20 @@ inherit Protocols.SMTP.Client;
     Log.debug("got " + rv + " on DATA BODY");
     if(rv >= 500) // permanent failure
     {
-      failures += qi["envelope_to"];
-      qi->delete();
+      failures += i["envelope_to"];
+      i->delete();
     }
     else if(rv >= 400 && rv <= 499) // temporary failure
     {     
-      qi->set_atomic((["last_attempt": Calendar.now()->second(),
+      i->set_atomic((["last_attempt": Calendar.now()->second(),
                       "in_progress":  0 ]));
     }
     else // success!
     { 
-      qi->delete();
+      i->delete();
     }
 
+  }
     rv = cmd("QUIT");
     if(sizeof(failures)) return failures;
     else return 0;
