@@ -17,6 +17,13 @@ inherit Protocols.SMTP.Client;
     return r;
   }
 
+  void process_queue(int queue_interval, int queue_length)
+  {
+    array qi;
+    Fins.Model.find.outbound_messages((["in_progress": 0]));
+    process_queue_items(qi);
+    Fins.Model.find.outbound_messages((["queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - queue_length ) ]));
+  }
 
   int|array(string) send_message(string from, array(string) to, string body)
   {
