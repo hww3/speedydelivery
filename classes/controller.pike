@@ -14,6 +14,8 @@ void start()
   listinfo = load_controller("list_controller");
   commands = load_controller("command_controller");
   archive = load_controller("archive_controller");
+
+  around_filter(app->user_filter);
 }
 
 

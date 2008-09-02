@@ -1,4 +1,21 @@
-<font color="red"><%flash%></font><br/>
+<% if data->user %>
+<b>My Lists</b>
+<table>
+<%foreach var="$user.Subscriptions" val="subscription"%>
+<tr>
+<td>
+  <%action_link controller="/listinfo" args="$subscription.List.name"%><%$subscription.List.name%></a>
+</td>
+<td>
+<%autoformat var="$subscription.List.description"%>
+</td>
+</tr>
+<%end%>
+</table>
+<p/>
+<hr/>
+<% else %>
+<% endif %>
 <b>Lists available at this server</b>
 <hr/>
 <table>
@@ -13,3 +30,4 @@
 </tr>
 <%end %>
 </table>
+

@@ -9,14 +9,6 @@
 </html>
 <body>
 <div><font color="red"><i><%flash%></i></font></div>
-<%if data->user %>
-Logged in as <%$user.email%>.
-<p/>
-<% else %>
-You are not currently logged in. <%action_link controller="/auth" action="login" return_to="$request.not_query"%>Login</a> to access your personal
-settings.
-<p/>
-<% endif %>
 
 <%yield%>
 </body>
