@@ -12,7 +12,10 @@ Subscription get_subscription(Subscriber s)
   mixed sa = Fins.Model.find.subscriptions(
        (["Subscriber": s, "List": this]));
 
-  if(sa && sizeof(sa)) return sa[0];
+  if(sa && sizeof(sa)) 
+    return sa[0];
+  else 
+    return 0;
 }
 
 int request_unsubscription(string|Mail.MailAddress email)

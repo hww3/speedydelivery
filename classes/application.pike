@@ -236,14 +236,16 @@ int generate_help(SpeedyDelivery.Request r)
   return 250;
 }
 
-int admin_user_filter(Fins.Request id, Fins.Response response, mixed ... args) 
+int user_filter(function yield, Fins.Request id, Fins.Response response, mixed ... args) 
 {
-   if(!id->misc->session_variables->user)
-   {
-      response->flash("msg", "You must login to perform this action.");
-      response->redirect(controller->auth->login, 0, ([ "return_to": id->not_query ]));
-      return 0;
-   }
 
+   yield();
+   mixed d = response->template_data;
+   if(d)
+   {
+     d->add("user", id->misc->session_variables->user);
+     d->add("request", id);
+   }   
    return 1;
 }
+

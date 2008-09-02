@@ -1,5 +1,15 @@
 <div><font color="red"><i><%flash%></i></font></div>
 
+<%if data->user %>
+Logged in as <%$user.email%>.
+<p/>
+<% else %>
+You are not currently logged in. <%action_link controller="/auth" action="login" return_to="$request.not_query"%>Login</a> to access your personal 
+settings.
+<p/>
+<% endif %>
+
+
 <b>About <%$list.name%></b>
 <br/>
 <%autoformat var="$list.description"%>
@@ -15,6 +25,13 @@ To post a message to all the list members, send email to
 You can subscribe to the list, or change your existing subscription, in 
 the sections below. 
 <hr/>
+
+<%if data->user && data->subscription %>
+You are subscribed to this list.
+
+<hr/>
+<% endif %>
+
 <b>Subscribing to <%$list.name%></b>
 <br/>
  Subscribe to <%$list.name%> by filling out the following form.
@@ -62,4 +79,3 @@ Email:
 </table>
 <input type="submit" name="submit" value="Submit"/>
 </form>
-

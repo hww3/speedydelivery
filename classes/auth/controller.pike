@@ -68,13 +68,13 @@ static mixed default_find_user_password(Request id, Response response, Template.
 //! override this method to set the mail host for retrieved password emails.
 static string get_mail_host()
 {
-  return gethostname();
+  return app->getmyhostname();
 }
 
 //! override this method to set the return address for retrieved password emails.
 static string get_return_address()
 {
-  return "password-retrieval@" + gethostname();
+  return "password-retrieval@" + get_mail_host();
 }
 
 // _login is used for ajaxy logins.
@@ -151,11 +151,11 @@ public void forgotpassword(Request id, Response response, Template.View t, mixed
         tp->add("password", r["password"]);
 
         string mailmsg = tp->render();
+        object m = MIME.Message();
+        m->setdata(mailmsg);
+        m->headers["subject"] = "Your SpeedyDelivery password";
 
-        Protocols.SMTP.Client(get_mail_host())->simple_mail(r["email"],
-                              "Your password",
-                              get_return_address(),
-                              mailmsg);
+        app->send_message(get_return_address(), ({r["email"]}), (string)m);
 
         response->flash("Your password has been located and will be sent to the email address on record for your account.\n");
         response->redirect(login);

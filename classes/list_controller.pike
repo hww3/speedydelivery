@@ -2,12 +2,17 @@ inherit Fins.DocController;
 
 static void start()
 {
-  before_filter(app->admin_user_filter);
+  around_filter(app->user_filter);
 }
-
-
 
 void index(object id, object response, object view, mixed args)
 {
-  view->add("list", Fins.Model.find.lists_by_alt(args[0]));
+  object list = Fins.Model.find.lists_by_alt(args[0]);
+  view->add("list", list);
+
+  object user = id->misc->session_variables->user;
+  object s; // the subscription, if we have it.
+
+  if(user && (s = list->get_subscription(user)))
+    view->add("subscription", s);
 }
