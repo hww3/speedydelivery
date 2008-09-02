@@ -1,12 +1,16 @@
 
 inherit Fins.DocController;
 
+Fins.FinsController auth;
+
 Fins.FinsController listinfo;
 Fins.FinsController commands;
 Fins.FinsController archive;
 
 void start()
 {
+  auth = load_controller("auth/controller");
+
   listinfo = load_controller("list_controller");
   commands = load_controller("command_controller");
   archive = load_controller("archive_controller");

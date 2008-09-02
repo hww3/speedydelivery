@@ -53,9 +53,6 @@ int new_subscriber(string eventname, mapping event, mixed ... args)
     mime->headers["to"] = event->subscriber->get_address();
     mime->headers["from"] = app->get_listmaster_address();
 
-// TODO: we should use standard Fins templates rather than
-// our own crazy substitution system.
-  
     string msg = 
 #string "new_user.txt";
 
@@ -80,9 +77,6 @@ int after_subscribe(string eventname, mapping event, mixed ... args)
     mime->headers["to"] = event->subscriber->get_address();
     mime->headers["from"] = app->get_bounce_address(event->list);
 
-// TODO: we should use standard Fins templates rather than
-// our own crazy substitution system.
-  
     string msg =        event->list["_options"]["welcome_message"] ||
 #string "welcome.txt";
 
