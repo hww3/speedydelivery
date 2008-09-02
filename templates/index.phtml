@@ -1,4 +1,5 @@
 <% if data->user %>
+<!-- if we're logged in, provide a quick rundown of lists we're subscribed to. -->
 <b>My Lists</b>
 <table>
 <%foreach var="$user.Subscriptions" val="subscription"%>
