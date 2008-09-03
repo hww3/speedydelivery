@@ -15,11 +15,24 @@ the sections below.
 <hr/>
 
 <%if data->user && data->subscription %>
-You are subscribed to this list.
-
+<b>Delivery Settings</b>
+<br/>
+You are subscribed to this list. You may modify the delivery settings for your
+subscription here.
+<p/>
+<form action="<%action_url controller="/commands" action="setmode" args="$list.name"%>" method="post">
+Delivery mode:
+<input type="radio" name="mode" value="M" <%if data->subscription["mode"] == "M"%>checked="1"<%endif%>/>
+Individual Messages
+<input type="radio" name="mode" value="D" <%if data->subscription["mode"] == "D"%>checked="1"<%endif%>/>
+Digest
+<input type="radio" name="mode" value="S" <%if data->subscription["mode"] == "S"%>checked="1"<%endif%>/>
+No Mails
+<p>
+<input type="submit" name="submit" value="Submit"/>
+</form>
 <hr/>
-<% endif %>
-
+<%else%>
 <b>Subscribing to <%$list.name%></b>
 <br/>
  Subscribe to <%$list.name%> by filling out the following form.
@@ -49,6 +62,8 @@ Email:
 </form>
 
 <hr/>
+
+<%endif%>
 <b>Unsubscribing from <%$list.name%></b>
 <br/>
  Unsubscribe from <%$list.name%> by filling out the following form.

@@ -25,3 +25,22 @@ werror("response: %O\n", r);
   response->redirect(app->controller->listinfo, args);
 }
 
+void setmode(object id, object response, object view, mixed args)
+{
+  object list = Fins.Model.find.lists_by_alt(args[0]);
+  object s;
+
+  if(!id->misc->session_variables->user)
+    response->flash("You must be logged in to change your deliver mode.");
+  else if(!(s = list->get_subscription(id->misc->session_variables->user)))
+    response->flash("You must be subscribed to this list in order to change delivery settings.");
+  else if(!(<"M", "D", "S">)[id->variables->mode])
+    response->flash("You have selected an invalid option.");
+  else
+  {
+   s["mode"] = id->variables->mode;
+    response->flash("Your delivery mode has been changed.");
+  }
+
+  response->redirect(app->controller->listinfo, args);
+}
