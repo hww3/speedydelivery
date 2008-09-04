@@ -51,6 +51,7 @@ int check_digest_ready(string eventname, mapping event)
 
 void process_digests()
 {
+  Log.info("Preparing digests for all lists.");
   foreach(Fins.Model.find.lists_all();; SpeedyDelivery.Objects.List l)
   {
     // only process digests for those lists who haven't had a digest in 

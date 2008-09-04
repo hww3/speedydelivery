@@ -13,8 +13,10 @@ int handle_post(SpeedyDelivery.Request request)
     string xl = request->mime->headers["x-loop"];
 
     if(xl && lower_case(xl) == lower_case(request->list_address)) 
+    {
+      Log.info("Ignoring message with matching X-Loop header: %s", request->list_address);
       return 250;
-
+    }
     mapping o = request->list["_options"];
 
     if(o->reject_non_subscribers)
@@ -66,6 +68,22 @@ int handle_post(SpeedyDelivery.Request request)
 void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
 {
   mime->headers["list-id"] = "<" +  request->list_address + ">";
+  mime->headers["x-loop"] = request->list_address;
+  mime->headers["x-list"] = replace(request->list_address, "@", ".");
+  mime->headers["list-post"] = "<mailto:" + 
+              request->list["_addresses"]["__default"] + ">"; 
+  mime->headers["list-subscribe"] = "<mailto:" + 
+    request->list["_addresses"]["subscribe"] + "?subject=subscribe>";
+  mime->headers["list-unsubscribe"] = "<mailto:" + 
+    request->list["_addresses"]["unsubscribe"]+ "?subject=unsubscribe>";
+
+  // TODO: we really need to come up with something better,
+  // like the algorithm we use in Response->redirect.
+  mime->headers["list-help"] = "<" + 
+     "http://" + app->config["smtp"]["return_host"] +
+     app->url_for_action(app->controller->listinfo, 
+                 ({request->list["name"]})) + ">";
+
   if(request->list->trigger_event("rewriteMessage",
              (["request": request, "mime": mime]))
       == SpeedyDelivery.abort) return;
