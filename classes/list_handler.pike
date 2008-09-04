@@ -7,6 +7,14 @@ int handle_post(SpeedyDelivery.Request request)
 {
    array fails;
 
+    // first, check to see if we have an X-Loop header, and deal
+    // with it appropriately.
+
+    string xl = request->mime->headers["x-loop"];
+
+    if(xl && lower_case(xl) == lower_case(request->list_address)) 
+      return 250;
+
     mapping o = request->list["_options"];
 
     if(o->reject_non_subscribers)
