@@ -90,8 +90,8 @@ void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
      app->url_for_action(app->controller->listinfo, 
                  ({request->list["name"]})) + ">";
 
-  if(r->list["_options"]["replies_to_list"])
-    mime->headers["reply-to"] = r->list["_addresses"]["__default"];
+  if(request->list["_options"]["replies_to_list"])
+    mime->headers["reply-to"] = request->list["_addresses"]["__default"];
 
 
   if(request->list->trigger_event("rewriteMessage",

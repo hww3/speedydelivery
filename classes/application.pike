@@ -195,6 +195,10 @@ object new_pref(string pref, string value, int type)
   }
 }
 
+int is_list_owner(SpeedyDelivery.Objects.List list, SpeedyDelivery.Objects.Subscriber user)
+{
+  return has_value(list["list_owners"], user);
+}
 
 int|array send_message(string sender, array recipients, string message)
 {
@@ -262,6 +266,19 @@ int user_filter(function yield, Fins.Request id, Fins.Response response, mixed .
      d->add("user", id->misc->session_variables->user);
      d->add("request", id);
    }   
+   return 1;
+}
+
+int mandatory_user_filter(function yield, Fins.Request id, Fins.Response response, mixed ... args)
+{
+   if(!id->misc->session_variables->user)
+   {
+      response->flash("msg", "You must login to perform this action.");
+      response->redirect(controller->auth->login, 0, ([ "return_to": id->not_query ]));
+      return 0;
+   }
+   yield();
+
    return 1;
 }
 
