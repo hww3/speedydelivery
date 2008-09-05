@@ -3,6 +3,10 @@
 import Tools.Logging;
 inherit Fins.FinsBase;
 
+// list options:
+//   reject_non_subscribers
+//   replies_to_list
+
 int handle_post(SpeedyDelivery.Request request)
 {
    array fails;
@@ -72,6 +76,8 @@ void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
   mime->headers["x-list"] = replace(request->list_address, "@", ".");
   mime->headers["list-post"] = "<mailto:" + 
               request->list["_addresses"]["__default"] + ">"; 
+  mime->headers["list-owner"] = "<mailto:" + 
+              request->list["_addresses"]["owner"] + ">"; 
   mime->headers["list-subscribe"] = "<mailto:" + 
     request->list["_addresses"]["subscribe"] + "?subject=subscribe>";
   mime->headers["list-unsubscribe"] = "<mailto:" + 
@@ -83,6 +89,10 @@ void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
      "http://" + app->config["smtp"]["return_host"] +
      app->url_for_action(app->controller->listinfo, 
                  ({request->list["name"]})) + ">";
+
+  if(r->list["_options"]["replies_to_list"])
+    mime->headers["reply-to"] = r->list["_addresses"]["__default"];
+
 
   if(request->list->trigger_event("rewriteMessage",
              (["request": request, "mime": mime]))

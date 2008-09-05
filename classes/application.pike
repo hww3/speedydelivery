@@ -227,7 +227,7 @@ string get_install_address()
 
 array(string) get_owner_addresses(SpeedyDelivery.Objects.List list)
 {
-  return list["owners"]["email"];
+  return list["list_owners"]["email"];
 }
 
 string get_bounce_address(SpeedyDelivery.Objects.List list)
