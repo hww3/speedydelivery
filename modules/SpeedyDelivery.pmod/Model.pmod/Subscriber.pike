@@ -5,6 +5,7 @@ inherit Fins.Model.DataObject;
 void post_define()
 {
 // Add any post configuration logic here
+  has_many_to_many("lists_owners", "List", "list_owner", "owned_list");
 }
 
 void validate(mapping changes, object errors, object i)

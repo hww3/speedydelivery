@@ -209,9 +209,25 @@ int|array send_message_for_list(SpeedyDelivery.Objects.List list, array recipien
                    recipients, message);
 }
 
+int|array send_message_to_list_owner(SpeedyDelivery.Objects.List list, string message)
+{
+    return send_message(get_install_address(),
+                   get_owner_addresses(list), message);
+}
+
 string getmyhostname()
 {
   return config["smtp"]["return_host"] || gethostname();
+}
+
+string get_install_address()
+{
+  return config["smtp"]["listmaster"];
+}
+
+array(string) get_owner_addresses(SpeedyDelivery.Objects.List list)
+{
+  return list["owners"]["email"];
 }
 
 string get_bounce_address(SpeedyDelivery.Objects.List list)

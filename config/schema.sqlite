@@ -6,6 +6,12 @@ create table lists (
    created datetime not null default CURRENT_TIMESTAMP
   );
 
+CREATE TABLE lists_owners
+(
+  list_id int(11),
+  subscriber_id int(11)
+);
+
 CREATE TABLE subscriptions (
   id integer PRIMARY KEY,
   subscriber_id integer NOT NULL,

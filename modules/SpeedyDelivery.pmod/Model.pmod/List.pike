@@ -7,6 +7,8 @@ void post_define()
 // Add any post configuration logic here
   add_field(Fins.Model.MetaDataField("_options", "options"));
   add_field(Fins.Model.TransformField("_addresses", "name", gen_addresses));
+  has_many_to_many("lists_owners", "Subscriber", "owned_list", "list_owner");
+
 //  set_alternate_key("name");
 }
 
