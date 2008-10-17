@@ -11,6 +11,17 @@ Mail.MailAddress get_address()
   return this["email"];
 }
 
+int has_bounced(List list)
+{
+  if(this["bounces"] > master_object->context->app->config["smtp"]->max_bounces)
+  {
+    unsubscribe(list);
+    this["bounces"] = 0;
+  }
+  else
+    this["bounces"]++;
+}
+
 Subscription get_subscription(List list)
 {
   mixed sa = Fins.Model.find.subscriptions(

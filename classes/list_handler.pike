@@ -26,7 +26,9 @@ int handle_post(SpeedyDelivery.Request request)
     if(o->reject_non_subscribers)
     {
        Log.debug("checking to see if the sender is a subscriber.");
-       if(!sizeof(Fins.Model.find.subscriptions(
+       object s;
+       if(catch(s = Fins.Model.find.subscribers_by_alt(request->sender->get_address())) || 
+           !sizeof(Fins.Model.find.subscriptions(
                 (["Subscriber": Fins.Model.find.subscribers_by_alt(request->sender->get_address()),
                  "List": request->list ]))))
       {

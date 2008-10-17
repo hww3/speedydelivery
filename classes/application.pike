@@ -251,6 +251,23 @@ string get_listmaster_address()
   return config["smtp"]["listmaster"];
 }
 
+int send_message_as_attachment_to_list_owner(SpeedyDelivery.Objects.List list, string subject, string message, MIME.Message mime)
+{
+    object wm;
+    object att = MIME.Message((string)mime);
+
+    att->headers["content-disposition"]="attachment";
+    att->setdisp_param("filename", att->headers["subject"]);
+    att = MIME.Message((string)att, (["content-type": "message/rfc822"]));
+
+    wm = MIME.Message(message,
+         (["content-type": "multipart/mixed", "subject": subject]),
+              ({MIME.Message(message, ([]))}) + ({att}));
+
+    return send_message_to_list_owner(list, (string)wm);
+}
+
+
 int generate_help(SpeedyDelivery.Request r)
 {
   return 250;
