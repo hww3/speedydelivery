@@ -11,6 +11,7 @@ void start()
 {
   load_default_destination_handler();
   load_plugins();
+  start_queue_processor();
 }
 
 // this is the default handler for a list (ie, the list address itself).
@@ -22,6 +23,23 @@ void load_default_destination_handler()
 
   object lho = lhp(this);
   destination_handlers->__default = lho->handle_post;
+}
+
+void start_queue_processor()
+{
+  int s = 5 + random(120);
+  Log.info("Will process queue in " + s + " seconds.");
+  call_out(do_process_queue, s);
+}
+
+void do_process_queue()
+{
+  Log.info("Processing queue.");
+  process_queue();
+  Log.info("Finished processing queue.");  
+  int s = 5 + (config["smtp"]->queue_interval||60)*10;
+  Log.info("Will process queue in " + s + " seconds.");
+  call_out(do_process_queue, s);
 }
 
 void load_plugins()
@@ -200,9 +218,17 @@ int is_list_owner(SpeedyDelivery.Objects.List list, SpeedyDelivery.Objects.Subsc
   return has_value(list["list_owners"], user);
 }
 
+
+void process_queue()
+{
+  object client = Mail.RobustClient(config["smtp"]->smtp_host ||"localhost", config["smtp"]->smtp_port||25);
+Log.debug("have Mail.RobustClient.");
+  client->process_queue((int)(config["smtp"]->queue_interval||60), (int)(config["smtp"]->queue_length||5760));
+}
+
 int|array send_message(string sender, array recipients, string message)
 {
-    return Mail.RobustClient(config["smtp"]->host, 25)->send_message(
+    return Mail.RobustClient(config["smtp"]->smtp_host, config["smtp"]->smtp_port||25)->send_message(
                    sender,
                    recipients, message);
 }
