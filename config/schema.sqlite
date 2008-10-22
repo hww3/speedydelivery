@@ -51,6 +51,18 @@ CREATE TABLE outbound_messages
   last_attempt datetime NOT NULL default CURRENT_TIMESTAMP
 );
 
+CREATE TABLE held_messages
+(
+  id integer NOT NULL PRIMARY KEY,
+  list_id integer not null,
+  envelope_from varchar(320) not null,
+  subject varchar(120),
+  holdtype char(12) not null,
+  content MEDIUMBLOB,
+  added timestamp default CURRENT_TIMESTAMP
+);
+
+
 CREATE TABLE archived_messages
 (
   id integer NOT NULL PRIMARY KEY,

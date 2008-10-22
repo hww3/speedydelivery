@@ -43,6 +43,17 @@ CREATE TABLE outbound_messages
   last_attempt datetime NOT NULL default CURRENT_TIMESTAMP
 );
 
+CREATE TABLE held_messages
+(
+  id int(11) NOT NULL auto_increment PRIMARY KEY,
+  list_id int(11) not null,
+  envelope_from varchar(320) not null,
+  subject varchar(120),
+  holdtype char(12) not null,
+  content MEDIUMBLOB,
+  added timestamp default NOW()
+);
+
 CREATE TABLE archived_messages
 (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
@@ -61,7 +72,7 @@ CREATE TABLE confirmations
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   confid varchar(25) not null unique key,
   list varchar(16) not null,
-  string conftype varchar(16) not null,
+  conftype varchar(16) not null,
   email varchar(320) not null,
   options blob,
   queued timestamp NOT NULL default CURRENT_TIMESTAMP
