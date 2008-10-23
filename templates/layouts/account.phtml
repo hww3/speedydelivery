@@ -1,10 +1,6 @@
 <html>
 <head>
-  <%if data["list"]%>
-  <title>SpeedyDelivery: <%$list.name%></title>
-  <%else%>
-  <title>SpeedyDelivery: Home</title>
-  <%endif%>
+  <title>SpeedyDelivery: Account information for <%$user.email%></title>
 </head>
 </html>
 <body>
@@ -20,10 +16,7 @@ settings.
 <% endif %>
 
 <%yield%>
-
-<%if data->list%>
+<p>
 <%action_link controller="/" %>SpeedyDelivery Home</a>
-<%endif%>
-
 </body>
 </html>

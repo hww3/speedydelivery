@@ -6,6 +6,7 @@ Fins.FinsController auth;
 Fins.FinsController listinfo;
 Fins.FinsController listadmin;
 Fins.FinsController commands;
+Fins.FinsController account;
 Fins.FinsController archive;
 
 void start()
@@ -15,6 +16,7 @@ void start()
   listinfo = load_controller("list_controller");
   listadmin = load_controller("admin_controller");
   commands = load_controller("command_controller");
+  account = load_controller("account_controller");
   archive = load_controller("archive_controller");
 
   around_filter(app->user_filter);
