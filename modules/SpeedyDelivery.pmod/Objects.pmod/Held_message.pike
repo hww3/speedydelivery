@@ -4,3 +4,13 @@ inherit Fins.Model.DirectAccessInstance;
 object repository = Fins.Model;
 string type_name = "Held_message";
 
+void new_for_list_action(object list, string action, string sender, object mime)
+{
+  mapping v = ([]);
+  v->List = list;
+  v->envelope_from = sender;
+  v->subject = mime->headers->subject || "[NO SUBJECT]";
+  v->holdtype = action;
+  v->content = (string)mime;
+  this->set_atomic(v);
+}

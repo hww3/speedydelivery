@@ -1,5 +1,6 @@
 import Fins;
 
+int __quiet = 1;
 inherit Fins.DocController;
 
 //! this is a sample authentication handler module which can be customized
@@ -122,11 +123,13 @@ public void login(Request id, Response response, Template.View t, mixed ... args
 
 public void logout(Request id, Response response, Template.View t, mixed ... args)
 {
-  if(id->misc->session_variables->userid)
+  if(id->misc->session_variables->user)
   {
      id->misc->session_variables->logout = time();
+     id->misc->session_variables->user = 0;
      m_delete(id->misc->session_variables, "user");
   }
+  werror("%O\n", id->misc);
 
   response->flash("You have been successfully logged out.");
   response->redirect(id->referrer||default_action);

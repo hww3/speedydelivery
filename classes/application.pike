@@ -320,7 +320,13 @@ int mandatory_user_filter(function yield, Fins.Request id, Fins.Response respons
       response->redirect(controller->auth->login, 0, ([ "return_to": id->not_query ]));
       return 0;
    }
+
+
    yield();
+
+   mixed d = response->template_data;
+   d->add("user", id->misc->session_variables->user);
+   d->add("request", id);
 
    return 1;
 }

@@ -7,6 +7,12 @@ inherit Fins.Model.DirectAccessInstance;
 object repository = Fins.Model;
 string type_name = "List";
 
+int is_owner(SpeedyDelivery.Objects.Subscriber user)
+{
+  return has_value(this["list_owners"], user);
+}
+
+
 Subscription get_subscription(Subscriber s)
 {
   mixed sa = Fins.Model.find.subscriptions(
