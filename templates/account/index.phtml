@@ -1,6 +1,5 @@
 <h1>Account information for <%$user.email%>.</h1>
-
-<form>
+<form action="<%action_url action="update"%>" method="post">
 <b>User Info</b>
 <br/>
 You can update your real name but not your email address. To change the email address your mail gets delivered to, you must resubscribe to lists using 
@@ -13,12 +12,12 @@ Real Name: <input type="string" name="name" value="<%$user.name%>">
 <input type="submit" value="Update Account Info"/>
 </form>
 <p>
-<form>
+<form action="<%action_url action="update"%>" method="post">
 <b>Reset Password</b>
 <br/>
-Password: <input type="password" name="reset_password"/>
+Password: <input type="password" name="reset_1"/>
 <br/>
-Retype Password: <input type="password" name="reset_password2"/>
+Retype Password: <input type="password" name="reset_2"/>
 <p>
 <input type="hidden" name="action" value="password"/>
 <input type="submit" value="Change Password"/>
