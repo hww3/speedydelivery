@@ -9,8 +9,6 @@ inherit Fins.FinsBase;
 
 int handle_post(SpeedyDelivery.Request request)
 {
-   array fails;
-
     // first, check to see if we have an X-Loop header, and deal
     // with it appropriately.
 
@@ -47,9 +45,17 @@ int handle_post(SpeedyDelivery.Request request)
       }
     }
 
-    if(app->trigger_event("preDelivery",
+  do_post(request);
+  return 250;
+}
+
+void do_post(object request)
+{
+   array fails;
+ 
+   if(app->trigger_event("preDelivery",
              (["request": request, "mime": request->mime, "list": request->list]))
-      == SpeedyDelivery.abort) return 250;
+      == SpeedyDelivery.abort) return;
 
     rewrite_message(request, request->mime);
 
@@ -69,9 +75,9 @@ int handle_post(SpeedyDelivery.Request request)
 
     if(app->trigger_event("postDelivery",
              (["request": request, "list": request->list, "mime": request->mime]))
-      == SpeedyDelivery.abort) return 250;
+      == SpeedyDelivery.abort) return;
 
-  return 250;
+  return;
 }
 
 void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)

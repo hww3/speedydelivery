@@ -15,6 +15,14 @@ void display(object id, object response, object view, mixed args)
   CHECKADMIN();
 }
 
+void displayholds(object id, object response, object view, mixed args)
+{
+  CHECKADMIN();
+  view->add("holds", 
+    Fins.Model.find.held_messages((["List": list])) 
+  );
+}
+
 void displaysubscriptions(object id, object response, object view, mixed args)
 {
   CHECKADMIN();

@@ -11,7 +11,7 @@ object list;
 string functionname;
 
 static void create(Fins.Application _app, object _mime, string _sender, string _recipient,
-                     void|string _raw, object _smtp)
+                     void|string _raw, object|void _smtp)
 {
   fins_app = _app;
   smtp = _smtp;

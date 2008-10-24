@@ -12,5 +12,6 @@ void new_for_list_action(object list, string action, string sender, object mime)
   v->subject = mime->headers->subject || "[NO SUBJECT]";
   v->holdtype = action;
   v->content = (string)mime;
+  v->added = Calendar.now();
   this->set_atomic(v);
 }
