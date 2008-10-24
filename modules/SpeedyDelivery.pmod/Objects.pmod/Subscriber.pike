@@ -47,6 +47,7 @@ Subscription subscribe(List list, int|void quiet, int|void digest)
   s["List"] = list;
   if(digest)
     s["mode"] = "D";
+  s["created"] = Calendar.now();
   s->save();
 
   if(master_object->context->app->trigger_event("postSubscribe", 

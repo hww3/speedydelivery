@@ -1,0 +1,58 @@
+<p>
+<b>Bulk Subscribe</b>
+<br/>
+You may subscribe users directly to this list by entering their email 
+addresses below, one per line.
+<p>
+<%action_form action="bulksubscribe" args="$list.name" method="post"%>
+<textarea rows="10" cols="60" name="addresses"></textarea>
+<p>
+<input type="submit" value="Subscribe"/>
+</form>
+<hr/>
+<b>Manage Subscribers to <%$list.name%></b> (<%sizeof var="$list.Subscriptions"%> subscribers)
+<p>
+<table>
+<tr>
+<th colspan="2">Subscriber</th>
+<th>Since</th>
+<th>Delivery Setting</th>
+</tr>
+<%foreach var="$list.Subscriptions" val="subscription"%>
+<tr>
+<td>
+  <%$subscription.Subscriber.name%>
+</td>
+<td>
+  <%$subscription.Subscriber.email%>
+</td>
+<td>
+  <%friendly_date var="$subscription.created"%>
+</td>
+<td>
+<%action_form action="updatemode" args="$list.name" method="post"%>
+<input type="hidden" name="id" value="<%$subscription.id%>">
+<input type="radio" name="mode" value="M"
+<%if data->subscription["mode"] == "M"%>checked="1" <%endif%>>
+Individual Mails  
+&nbsp;
+<input type="radio" name="mode" value="D"
+<%if data->subscription["mode"] == "D"%>checked="1" <%endif%>>
+Digest  
+&nbsp;
+<input type="radio" name="mode" value="S"
+<%if data->subscription["mode"] == "S"%>checked="1" <%endif%>>
+No Mail
+
+&nbsp;
+
+<input type="radio" name="mode" value="U">
+Unsubscribe
+&nbsp;
+<input type="submit" value="Go"/>
+</form>
+</td>
+</tr>
+<%end%>
+</table>
+<p>

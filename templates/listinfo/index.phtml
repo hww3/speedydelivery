@@ -84,6 +84,9 @@ Email:
 </form>
 
 <% if data->user && data->list->is_owner(data->user) %>
-  You're a list owner. Access the list's administration page <%action_link controller="/listadmin" args="$list.name"%>here</a>.
+<hr/>
+<b>List Administration</b>
+<br/>
+  You're a list owner. Access the list's administration page <%action_link controller="/listadmin" action="display" args="$list.name"%>here</a>.
   <p>
 <%endif %>
