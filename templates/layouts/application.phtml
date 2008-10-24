@@ -10,8 +10,7 @@
 <body>
 <div><font color="red"><i><%flash%></i></font></div>
 <%if data->user %>
-Logged in as <%$user.email%>. <%action_link controller="/auth" action="logout" return_to="$request.not_query"%>Logout</a> / 
-<%action_link controller="/account" %>Edit</a> your user info.
+Logged in as <%$user.email%>. <%action_link controller="/auth" action="logout" return_to="$request.not_query"%>Logout</a> / <%action_link controller="/account" %>Edit</a> your user info.
 <p/>
 <% else %>
 You are not currently logged in. <%action_link controller="/auth" action="login" return_to="$request.not_query"%>Login</a> to access your personal
@@ -21,6 +20,7 @@ settings.
 
 <%yield%>
 
+<p/>
 <%if data->list%>
 <%action_link controller="/" %>SpeedyDelivery Home</a>
 <%endif%>
