@@ -12,6 +12,23 @@ void new_for_list_action(object list, string action, string sender, object mime)
   v->subject = mime->headers->subject || "[NO SUBJECT]";
   v->holdtype = action;
   v->content = (string)mime;
-  v->added = Calendar.now();
+//  v->added = Calendar.now();
   this->set_atomic(v);
+}
+
+void release()
+{
+  object app = master_object->context->app;
+  object mime = MIME.Message(this["content"]);
+  string sender = this["envelope_from"];
+  string raw;
+  string recipient = this["List"]["_addresses"]["__default"];
+  object smtp;
+
+  werror("%O, %O, %O\n", app, mime, recipient);
+
+  object r = SpeedyDelivery.Request(app, mime, sender, recipient, raw, smtp);
+
+  master_object->context->app->distribute_message(r);
+  delete();  
 }

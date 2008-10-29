@@ -1,0 +1,51 @@
+<%if sizeof(data->holds) %>
+<table>
+<tr>
+<th>
+  Reason
+</th>
+<th>
+  Sender
+</th>
+<th>
+  Subject
+</th>
+<th>
+  Sent
+</th>
+<th>
+  Action
+</th>
+</tr>
+<%foreach var="$holds" val="hold"%>
+<tr>
+<td>
+ <%$hold.holdtype%>
+</td>
+<td>
+ <%$hold.envelope_from%>
+</td>
+<td>
+<%action_link action="displayhold" args="$hold.List.name" id="$hold.id"%><%$hold.subject%></a>
+</td>
+<td>
+ <%friendly_date var="$hold.added"%>
+</td>
+<td>
+<%action_form action="processhold" method="post" args="$hold.List.name"%>
+<input type="hidden" name="id" value="<%$hold.id%>"/>
+Release <input type="radio" name="action" value="release" />
+&nbsp;
+Reject <input type="radio" name="action" value="reject" /> 
+<input type="submit" value="Go" />
+</form>
+</td>
+</tr>
+<%end%>
+
+
+<%else%>
+<font color="red">No holds for this list.</font>
+<%endif%>
+</table>
+

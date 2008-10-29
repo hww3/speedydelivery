@@ -59,52 +59,9 @@ int check_destination(string addr)
   if(catch(a = Mail.MailAddress(addr)))
     return 0;
 
-  a->localpart = lower_case(a->localpart);
-
-  if(is_valid_address(a))
+  if(app->is_valid_address(a))
     return 1;
   
 
   return 0;
-}
-
-int is_valid_address(Mail.MailAddress a)
-{
-  // if we already know that the address is okay, we just go with it.
-  array r;
-  if(r = app->valid_addresses[a->localpart])
-  {
-     Log.debug("list: %O, function: %O", r[0], r[1]);
-     return 1;
-  }
-  // otherwise, we need to figure it out.
-  // list addresses look like this: listname(-functionname)
-  // where listname cannot contain ("-" + any registered functionname).
-  array x = a->localpart/"-";
-
-  string functionname;
-
-  if(sizeof(x) > 1) // okay, we have a -, we need to figure if it's 
-                    // part of the list name, or an admin function.
-  {
-    if(app->destination_handlers[x[-1]])
-    {
-       functionname = x[-1];
-       x = x[0.. sizeof(x) - 2];
-    }
-  }
-
-  object l;
-
-  if(catch(l = Fins.Model.find.lists_by_alt(x*"-")))
-  {
-    Log.info("%s is not a valid list identifier.", a->localpart);
-    return 0;
-  }
-
-  Log.debug("list: %O, function: %O", l["name"], functionname);
-
-  app->valid_addresses[a->localpart] = ({l["name"], functionname || "__default"});
-  
-  return 1;
 }

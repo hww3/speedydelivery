@@ -1,0 +1,19 @@
+<html>
+<head>
+  <%if data["list"]%>
+  <title>SpeedyDelivery: <%$list.name%></title>
+  <%else%>
+  <title>SpeedyDelivery: Home</title>
+  <%endif%>
+</head>
+</html>
+<body>
+<div><font color="red"><i><%flash%></i></font></div>
+
+<%yield%>
+<p>
+<%action_link action="display" args="$list.name"%><%$list.name%> List Administration</a><br/>
+<%action_link controller="/listinfo" args="$list.name"%><%$list.name%> List Home</a><br/>
+<%action_link controller="/"%>SpeedyDelivery Home</a>
+</body>
+</html>

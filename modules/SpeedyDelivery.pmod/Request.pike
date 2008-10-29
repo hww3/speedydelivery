@@ -27,7 +27,9 @@ static void create(Fins.Application _app, object _mime, string _sender, string _
 
 void populate_fields()
 {
-  array x = fins_app->valid_addresses[recipient->localpart];
+  array x = fins_app->is_valid_address(recipient);
+
+  werror("x: %O\n", x);
 
   list = Fins.Model.find.lists_by_alt(x[0]);
   list_address = sprintf("%s@%s", list["name"], fins_app->getmyhostname());

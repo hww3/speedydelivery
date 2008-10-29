@@ -334,3 +334,52 @@ int mandatory_user_filter(function yield, Fins.Request id, Fins.Response respons
    return 1;
 }
 
+mixed is_valid_address(Mail.MailAddress a)
+{
+  // if we already know that the address is okay, we just go with it.
+  array r;
+
+  a->localpart = lower_case(a->localpart);
+
+  if(r = valid_addresses[a->localpart])
+  {
+     Log.debug("list: %O, function: %O", r[0], r[1]);
+     return r;
+  }
+  // otherwise, we need to figure it out.
+  // list addresses look like this: listname(-functionname)
+  // where listname cannot contain ("-" + any registered functionname).
+  array x = a->localpart/"-";
+
+  string functionname;
+
+  if(sizeof(x) > 1) // okay, we have a -, we need to figure if it's
+                    // part of the list name, or an admin function.
+  {
+    if(destination_handlers[x[-1]])
+    {
+       functionname = x[-1];
+       x = x[0.. sizeof(x) - 2];
+    }
+  }
+
+  object l;
+
+  if(catch(l = Fins.Model.find.lists_by_alt(x*"-")))
+  {
+    Log.info("%s is not a valid list identifier.", a->localpart);
+    return 0;
+  }
+
+  Log.debug("list: %O, function: %O", l["name"], functionname);
+
+  valid_addresses[a->localpart] = ({l["name"], functionname || "__default"});
+
+  return valid_addresses[a->localpart];
+}
+
+
+void distribute_message(SpeedyDelivery.Request r)
+{
+   function_object(destination_handlers->__default)->do_post(r);
+}

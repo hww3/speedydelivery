@@ -23,6 +23,23 @@ void displayholds(object id, object response, object view, mixed args)
   );
 }
 
+void displayhold(object id, object response, object view, mixed args)
+{
+  CHECKADMIN();
+  int sid = (int)(id->variables->id);
+
+  if(!sid)
+  {
+    response->flash("No Hold ID Provided.");
+    response->redirect(displayholds, list);
+    return;
+  }
+
+  view->add("hold", 
+    Fins.Model.find.held_messages_by_id(sid) 
+  );
+}
+
 void displaysubscriptions(object id, object response, object view, mixed args)
 {
   CHECKADMIN();
@@ -30,7 +47,7 @@ void displaysubscriptions(object id, object response, object view, mixed args)
 
 void listusers(object id, object response, object view, mixed args)
 {
-  CHECKADMIN();
+  CHECKADMIN_NOVIEW();
   String.Buffer d = String.Buffer();
  
   foreach(list["Subscriptions"]["Subscriber"];; object s)
@@ -73,7 +90,6 @@ void updatemode(object id, object response, object view, mixed args)
   }
 
   return;
-
 }
 
 void bulksubscribe(object id, object response, object view, mixed args)
@@ -112,4 +128,42 @@ void bulksubscribe(object id, object response, object view, mixed args)
       fails += (address  + "<br>\n");
   }
   response->flash(i + " addresses subscribed successfully. " + fails);
+}
+
+void processhold(object id, object response, object view, mixed args)
+{
+  CHECKADMIN_NOVIEW();
+  int sid = (int)(id->variables->id);
+  response->redirect(displayholds, args);
+
+  if(!sid)
+  {
+    response->flash("No Hold ID provided");    
+    return;
+  }
+
+  object s = Fins.Model.find.held_messages_by_id(sid);
+
+  if(s["List"] != list)
+  {
+    response->flash("Invalid Hold provided");
+  }
+  else
+  {
+    if(id->variables->action == "reject")
+    {
+      response->flash("Hold processed successfully.");
+      s->delete();
+    }
+    else if(id->variables->action == "release")
+    {
+      response->flash("Hold processed successfully.");
+      s->release();
+    }
+    else if(id->variables->action == "edit")
+    {
+      response->flash("Hold processed successfully.");
+    }
+
+  }
 }
