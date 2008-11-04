@@ -90,6 +90,15 @@ public void login(Request id, Response response, Template.View t, mixed ... args
                                app->url_for_action(default_action));
    }
 
+werror("Return to: %O\n", id->variables->return_to);
+
+   if(has_suffix(id->variables->return_to, 
+             app->url_for_action(forgotpassword)))
+        id->variables->return_to = app->url_for_action(default_action);
+
+werror("Return to: %O %O\n", id->variables->return_to, 
+  app->url_for_action(forgotpassword));
+
    switch(id->variables->action)
    {
       case "Cancel":
