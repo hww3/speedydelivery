@@ -18,7 +18,7 @@ constant INTEGER = 4;
 string getfullbodytext(object mime, string|void s)
 {
   if(!s) s = "";
-  if(if(!mime->headers["content-type"] || has_prefix(lower_case((string)mime->headers["content-type"]), "text/"))
+  if(!mime->headers["content-type"] || has_prefix(lower_case((string)mime->headers["content-type"]), "text/"))
     s += mime->getdata();
 
   if(mime->body_parts)
