@@ -5,7 +5,9 @@
 <b>Using <%$list.name%></b>
 <br/>
 To post a message to all the list members, send email to 
-<a href="mailto:<%$list._addresses.__default%>"><%$list._addresses.__default%></a>.
+<a 
+href="mailto:<%human_email var="$list._addresses.__default"%>"><%human_email var="$list._addresses.__default"%></a>.
+
 <%if data["list"]["_options"]["reject_non_subscribers"] == 1 %>
 <i>Note: this list's policy prohibits non-subscribers from posting.</i>
 <%endif%>
