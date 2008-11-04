@@ -2,6 +2,8 @@ inherit Fins.SMTPProcessor;
 
 import Tools.Logging;
 
+object log = Tools.Logging.get_logger("exceptions");
+
 int havesent;
 
 int|array _cb_rcptto(string addr)
@@ -46,7 +48,13 @@ int|array handle_message(SpeedyDelivery.Request request)
 
   if(request->functionname)
   {
-    app->destination_handlers[request->functionname](request);
+    mixed e;
+    e = catch(app->destination_handlers[request->functionname](request));
+
+    if(e)
+      log->exception("smtp processor intercepted an error.", e); 
+
+    return 250;
   }
   else
     return 550;

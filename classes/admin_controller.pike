@@ -23,6 +23,11 @@ void displayholds(object id, object response, object view, mixed args)
   );
 }
 
+void displaysettings(object id, object response, object view, mixed args)
+{
+  CHECKADMIN();
+}
+
 void displayhold(object id, object response, object view, mixed args)
 {
   CHECKADMIN();
