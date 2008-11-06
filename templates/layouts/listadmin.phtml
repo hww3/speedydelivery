@@ -9,12 +9,23 @@
 </html>
 <body>
 <div><font color="red"><i><%flash%></i></font></div>
+<div class="userbanner">
+<%if data->user %>
+Logged in as <%$user.email%>. <%action_link controller="/auth" action="logout" return_to="$request.not_query"%>Logout</a> / <%action_link
+controller="/account" %>Edit</a> your user info.
+<% else %>
+You are not currently logged in. <%action_link controller="/auth" action="login" return_to="$request.not_query"%>Login</a> to access your personal
+settings.
+<% endif %>
+</div>
+
 
 <%yield%>
 <p>
-<hr/>
+<div class="footer">
 <%action_link action="display" args="$list.name"%><%$list.name%> List Administration</a><br/>
 <%action_link controller="/listinfo" args="$list.name"%><%$list.name%> List Home</a><br/>
 <%action_link controller="/"%>SpeedyDelivery Home</a>
+</div>
 </body>
 </html>

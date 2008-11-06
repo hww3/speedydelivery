@@ -5,6 +5,7 @@
 </html>
 <body>
 <div><font color="red"><i><%flash%></i></font></div>
+<div class="userbar">
 <%if data->user %>
 Logged in as <%$user.email%>. <%action_link controller="/auth" action="logout" return_to="$request.not_query"%>Logout</a> / 
 <%action_link controller="/account" %>Edit</a> your user info.
@@ -17,6 +18,8 @@ settings.
 
 <%yield%>
 <p>
+<div class="footer">
 <%action_link controller="/" %>SpeedyDelivery Home</a>
+</div>
 </body>
 </html>
