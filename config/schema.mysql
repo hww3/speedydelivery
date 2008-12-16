@@ -29,6 +29,7 @@ CREATE TABLE subscribers
   email varchar(320) not null UNIQUE KEY,
   name varchar(320),
   password varchar(24),
+  is_admin int(1),
   bounces int,
   created datetime NOT NULL default CURRENT_TIMESTAMP
 );

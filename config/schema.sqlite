@@ -26,6 +26,7 @@ CREATE TABLE subscribers (
   id integer PRIMARY KEY,
   email varchar(320) not null unique,
   name varchar(320),
+  is_admin int(1),
   password varchar(24),
   bounces integer,
   created datetime NOT NULL default CURRENT_TIMESTAMP

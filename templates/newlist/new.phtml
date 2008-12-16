@@ -1,0 +1,19 @@
+<b>Create new list</b>
+<hr/>
+<%action_form method="post" action="do_new"%>
+<b>Name</b><br/>
+<input type="text" size="40" name="name" value="<%$name%>">
+<p/>
+<b>Title</b><br/>
+<input type="text" size="40" name="title" value="<%$title%>">
+<p/>
+<b>Description</b><br/>
+<textarea name="description"><%$description%></textarea>
+<p/>
+<b>Owner</b><br/>
+<input type="text" size="40" name="owner_address" value="<%$owner_address%>">
+<p/>
+<input type="submit" value="Create List">
+</form>
+
+

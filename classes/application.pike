@@ -213,6 +213,11 @@ object new_pref(string pref, string value, int type)
   }
 }
 
+int is_list_master(SpeedyDelivery.Objects.Subscriber user)
+{
+  return user["is_admin"];
+}
+
 int is_list_owner(SpeedyDelivery.Objects.List list, SpeedyDelivery.Objects.Subscriber user)
 {
   return has_value(list["list_owners"], user);

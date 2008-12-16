@@ -3,6 +3,7 @@ inherit Fins.DocController;
 
 Fins.FinsController auth;
 
+Fins.FinsController newlist;
 Fins.FinsController listinfo;
 Fins.FinsController listadmin;
 Fins.FinsController commands;
@@ -14,6 +15,7 @@ void start()
   auth = load_controller("auth/controller");
 
   listinfo = load_controller("list_controller");
+  newlist = load_controller("newlist_controller");
   listadmin = load_controller("admin_controller");
   commands = load_controller("command_controller");
   account = load_controller("account_controller");
