@@ -174,7 +174,7 @@ int trigger_event(string event, mixed ... args)
 object get_sys_pref(string pref)
 {
   object p;
-  catch(p = Fins.Model.find.preferences_by_alt(pref));
+  catch(p = Fins.DataSource._default.find.preferences_by_alt(pref));
   return p;
 }
 
@@ -186,7 +186,7 @@ object new_string_pref(string pref, string value)
   else 
   { 
      Log.info("Creating new preference object '" + pref  + "'.");
-     p = Fins.Model.new("Preference");
+     p = Fins.DataSource._default.new("Preference");
      p["name"] = pref;
      p["type"] = SpeedyDelivery.STRING;
      p["value"] = value;
@@ -203,7 +203,7 @@ object new_pref(string pref, string value, int type)
   if(p) return p;
   else 
   { 
-     p = Fins.Model.new("Preference");
+     p = Fins.DataSource._default.new("Preference");
      p["name"] = pref;
      p["type"] = type;
      p["description"] = "";
@@ -370,7 +370,7 @@ mixed is_valid_address(Mail.MailAddress a)
 
   object l;
 
-  if(catch(l = Fins.Model.find.lists_by_alt(x*"-")))
+  if(catch(l = Fins.DataSource._default.find.lists_by_alt(x*"-")))
   {
     Log.info("%s is not a valid list identifier.", a->localpart);
     return 0;

@@ -2,11 +2,11 @@
 
 inherit Fins.Model.DataObject;
 
-void post_define()
+void post_define(object context)
 {
 // Add any post configuration logic here
 
-  add_field(Fins.Model.MetaDataField("_options", "options"));
+  add_field(context, Fins.Model.MetaDataField("_options", "options"));
   set_alternate_key("confid");
 
 }

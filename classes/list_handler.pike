@@ -25,9 +25,9 @@ int handle_post(SpeedyDelivery.Request request)
     {
        Log.debug("checking to see if the sender is a subscriber.");
        object s;
-       if(catch(s = Fins.Model.find.subscribers_by_alt(request->sender->get_address())) || 
+       if(catch(s = Fins.DataSource._default.find.subscribers_by_alt(request->sender->get_address())) || 
            !sizeof(Fins.Model.find.subscriptions(
-                (["Subscriber": Fins.Model.find.subscribers_by_alt(request->sender->get_address()),
+                (["Subscriber": Fins.DataSource._default.find.subscribers_by_alt(request->sender->get_address()),
                  "List": request->list ]))))
       {
         Log.debug("sender isn't a subscriber. sending a failure message.");
@@ -61,14 +61,14 @@ void do_post(object request)
 
     if(catch(
       fails = app->send_message_for_list(request->list, 
-                                         Fins.Model.find.subscriptions((["List": request->list, "mode": "M"]))["Subscriber"]["email"],
+                                         Fins.DataSource._default.find.subscriptions((["List": request->list, "mode": "M"]))["Subscriber"]["email"],
                                          (string)request->mime)
     )) Log.warn("an error occurred while sending a message.");
 
     if(fails)
     {
       Log.debug("the following failures occurred: %O", fails);
-      array f = Fins.Model.find.subscribers(
+      array f = Fins.DataSource._default.find.subscribers(
                          (["email": Fins.Model.InCriteria(fails)]));
       f["bounces"]++;
     }

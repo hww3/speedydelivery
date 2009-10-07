@@ -3,7 +3,7 @@ int __quiet = 1;
 
 void subscribe(object id, object response, object view, mixed args)
 {
-  object list = Fins.Model.find.lists_by_alt(args[0]);
+  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
   int r = list->request_subscription(id->variables->email, id->variables->name, (int)id->variables->digest);
 
   if(r == 260)
@@ -15,7 +15,7 @@ void subscribe(object id, object response, object view, mixed args)
 
 void unsubscribe(object id, object response, object view, mixed args)
 {
-  object list = Fins.Model.find.lists_by_alt(args[0]);
+  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
   int r = list->request_unsubscription(id->variables->email);
 werror("response: %O\n", r);
   if(r == 260)
@@ -27,7 +27,7 @@ werror("response: %O\n", r);
 
 void setmode(object id, object response, object view, mixed args)
 {
-  object list = Fins.Model.find.lists_by_alt(args[0]);
+  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
   object s;
 
   if(!id->misc->session_variables->user)

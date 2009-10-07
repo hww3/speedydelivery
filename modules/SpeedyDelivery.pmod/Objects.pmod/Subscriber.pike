@@ -3,7 +3,7 @@
 import SpeedyDelivery.Objects;
 
 inherit Fins.Model.DirectAccessInstance;
-object repository = Fins.Model;
+
 string type_name = "Subscriber";
 
 Mail.MailAddress get_address()
@@ -24,7 +24,7 @@ int has_bounced(List list)
 
 Subscription get_subscription(List list)
 {
-  mixed sa = Fins.Model.find.subscriptions(
+  mixed sa = context->find->subscriptions(
        (["Subscriber": this, "List": list]));
 
   if(sa && sizeof(sa)) return sa[0];
@@ -38,7 +38,7 @@ Subscription subscribe(List list, int|void quiet, int|void digest)
 
   if(s) throw(Error.Generic("Already subscribed to this list\n"));
 
-  if(master_object->context->app->trigger_event("preSubscribe", 
+  if(context->app->trigger_event("preSubscribe", 
              (["list": list, "subscriber": this, "quiet": quiet]))  
     == SpeedyDelivery.abort) return 0;
 
@@ -50,7 +50,7 @@ Subscription subscribe(List list, int|void quiet, int|void digest)
   s["created"] = Calendar.now();
   s->save();
 
-  if(master_object->context->app->trigger_event("postSubscribe", 
+  if(context->app->trigger_event("postSubscribe", 
              (["list": list, "subscriber": this, "quiet": quiet]))  
     == SpeedyDelivery.abort) return s;
 
@@ -65,14 +65,14 @@ int unsubscribe(List list, int|void quiet)
 
   if(!s) throw(Error.Generic("Not subscribed to this list\n"));
 
-  if(master_object->context->app->trigger_event("preUnsubscribe", 
+  if(context->app->trigger_event("preUnsubscribe", 
              (["list": list, "subscriber": this, "quiet": quiet]))
     == SpeedyDelivery.abort) return SpeedyDelivery.abort;
 
 
   s->delete();
 
-  return master_object->context->app->trigger_event("postUnsubscribe", 
+  return context->app->trigger_event("postUnsubscribe", 
              (["list": list, "subscriber": this, "quiet": quiet]));  
 
 }
@@ -90,7 +90,7 @@ void new_from_address(Mail.MailAddress s)
   this["password"] = gen_password();
   save();
 
-  master_object->context->app->trigger_event("createNewSubscriber", 
+  context->app->trigger_event("createNewSubscriber", 
              (["subscriber": this]));
 }
 

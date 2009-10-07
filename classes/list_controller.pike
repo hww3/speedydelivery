@@ -7,7 +7,7 @@ static void start()
 
 void index(object id, object response, object view, mixed args)
 {
-  object list = Fins.Model.find.lists_by_alt(args[0]);
+  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
   view->add("list", list);
 
   object user = id->misc->session_variables->user;

@@ -4,7 +4,6 @@ import SpeedyDelivery.Objects;
 import Tools.Logging;
 inherit Fins.Model.DirectAccessInstance;
 
-object repository = Fins.Model;
 string type_name = "List";
 
 int is_owner(SpeedyDelivery.Objects.Subscriber user)
@@ -15,7 +14,7 @@ int is_owner(SpeedyDelivery.Objects.Subscriber user)
 
 Subscription get_subscription(Subscriber s)
 {
-  mixed sa = Fins.Model.find.subscriptions(
+  mixed sa = context->find->subscriptions(
        (["Subscriber": s, "List": this]));
 
   if(sa && sizeof(sa)) 
@@ -35,7 +34,7 @@ int request_unsubscription(string|Mail.MailAddress email)
   SpeedyDelivery.Objects.Subscriber subscriber;
 
   catch(subscriber =
-        Fins.Model.find.subscribers_by_alt(a->get_address()));
+        context->find->subscribers_by_alt(a->get_address()));
 
   if(!subscriber || !get_subscription(subscriber))
   {
@@ -58,7 +57,7 @@ int request_subscription(string|Mail.MailAddress email, string|void name, int|vo
   object subscriber;
 
   catch(subscriber =
-        Fins.Model.find.subscribers_by_alt(a->get_address()));
+        context->find->subscribers_by_alt(a->get_address()));
 
   if(subscriber && get_subscription(subscriber))
   {
@@ -113,7 +112,7 @@ int unsubscribe(Confirmation|Subscriber|Mail.MailAddress s)
 Subscription subscribe_via_mailaddress(Mail.MailAddress m, int|void digest)
 {
   Subscriber sx;
-  catch(sx = Fins.Model.find.subscribers_by_alt(m->get_address()));   
+  catch(sx = context->find->subscribers_by_alt(m->get_address()));   
   if(!sx) 
   {
     sx = Subscriber();
@@ -129,7 +128,7 @@ Subscription subscribe_via_mailaddress(Mail.MailAddress m, int|void digest)
 int unsubscribe_via_mailaddress(Mail.MailAddress m)
 {
   Subscriber sx;
-  catch(sx = Fins.Model.find.subscribers_by_alt(m->get_address()));   
+  catch(sx = context->find->find->subscribers_by_alt(m->get_address()));   
   if(!sx) 
   {
     return 0;
@@ -158,9 +157,9 @@ int trigger_event(string event, mixed ... args)
 {
   int retval;
   Log.debug("Calling event " + event + " for list %O", this);
-  if(master_object->context->app->event_handlers[event])
+  if(context->app->event_handlers[event])
   {
-    foreach(master_object->context->app->event_handlers[event];; function h)
+    foreach(context->app->event_handlers[event];; function h)
     {
       object o = function_object(h);
       if(!o->list_enabled(this)) continue;
@@ -188,18 +187,18 @@ int generate_unsubscription_confirmation(Mail.MailAddress sender)
   object mime = MIME.Message();
   mime->headers["subject"] = "Confirm Unsubscription to " + this["name"];
   mime->headers["to"] = sender->get_address();
-  mime->headers["from"] = master_object->context->app->get_address_for_function(this, "unsubscribe");
+  mime->headers["from"] = context->app->get_address_for_function(this, "unsubscribe");
 
   string msg = this["_options"]["confirm_message"] ||
 #string "../../../plugins/unsubscribe/confirm.txt";
 
-  object v = master_object->context->app->view->get_string_view(msg);
+  object v = context->app->view->get_string_view(msg);
 
   v->add("list", this);
   v->add("confirmation", c);
 
   mime->setdata(v->render());
-  master_object->context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
+  context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
 
   return 250;
 }
@@ -218,18 +217,18 @@ int generate_subscription_confirmation(Mail.MailAddress sender, int|void digest)
   object mime = MIME.Message();
   mime->headers["subject"] = "Confirm Subscription to " + this["name"];
   mime->headers["to"] = sender->get_address();
-  mime->headers["from"] = master_object->context->app->get_address_for_function(this, "subscribe");
+  mime->headers["from"] = context->app->get_address_for_function(this, "subscribe");
 
   string msg = this["_options"]["confirm_message"] ||
 #string "../../../plugins/subscribe/confirm.txt";
 
-  object v = master_object->context->app->view->get_string_view(msg);
+  object v = context->app->view->get_string_view(msg);
 
   v->add("list", this);
   v->add("confirmation", c);
 
   mime->setdata(v->render());
-  master_object->context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
+  context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
 
   return 250;
 }

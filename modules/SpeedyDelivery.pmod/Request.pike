@@ -31,7 +31,7 @@ void populate_fields()
 
   werror("x: %O\n", x);
 
-  list = Fins.Model.find.lists_by_alt(x[0]);
+  list = Fins.Model.get_context("_default")->lists_by_alt(x[0]);
   list_address = sprintf("%s@%s", list["name"], fins_app->getmyhostname());
   functionname = x[1];
 }

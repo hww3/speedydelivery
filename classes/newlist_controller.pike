@@ -2,7 +2,9 @@ inherit Fins.DocController;
 
 int __quiet=1;
 
-#define CHECKADMIN() object user = id->misc->session_variables->user; if(!app->is_list_master(id->misc->session_variables->user)) {response->set_data("You must be a list master in order to access this function."); return;\  }
+#define CHECKADMIN() {object user = id->misc->session_variables->user; \
+ if(!app->is_list_master(id->misc->session_variables->user)) \
+ {response->set_data("You must be a list master in order to access this function."); return;  }}
 
 static void start()
 {
@@ -26,7 +28,7 @@ void do_new(object id, object response, object view, mixed args)
   object l, s;
 
   // check to see if the list name is in use.
-  catch(l = Fins.Model.find.lists_by_alt(id->variables->name));
+  catch(l = Fins.DataSource._default.find.lists_by_alt(id->variables->name));
 
   if(l)
   { 
@@ -51,7 +53,7 @@ void do_new(object id, object response, object view, mixed args)
   l["name"] = id->variables->name;
 
   // prepare the list owner.
-  catch(s = Fins.Model.find.subscribers_by_alt(addr->get_address()));
+  catch(s = Fins.DataSource._default.find.subscribers_by_alt(addr->get_address()));
 
   if(!s) 
   {

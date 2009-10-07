@@ -2,8 +2,15 @@ inherit Fins.DocController;
 
 int __quiet=1;
 
-#define CHECKADMIN() object user = id->misc->session_variables->user;  object list = Fins.Model.find.lists_by_alt(args[0]);  view->add("list", list);  if(!app->is_list_owner(list, id->misc->session_variables->user)) {response->set_data("You must be an owner of a list in order to access this function."); return;\  }
-#define CHECKADMIN_NOVIEW() object user = id->misc->session_variables->user; object list = Fins.Model.find.lists_by_alt(args[0]);  if(!app->is_list_owner(list, id->misc->session_variables->user)) {response->set_data("You must be an owner of a list in order to access this function."); return;\  }
+#define CHECKADMIN()  object user = id->misc->session_variables->user;  object list = \
+ Fins.DataSource._default.find.lists_by_alt(args[0]); \
+ view->add("list", list);  if(!app->is_list_owner(list, id->misc->session_variables->user)) \
+{response->set_data("You must be an owner of a list in order to access this function."); return;  }
+
+#define CHECKADMIN_NOVIEW()  object user = id->misc->session_variables->user; \
+object list = Fins.DataSource._default.find.lists_by_alt(args[0]); \
+ if(!app->is_list_owner(list, id->misc->session_variables->user)) \
+ {response->set_data("You must be an owner of a list in order to access this function."); return;  }
 
 static void start()
 {
@@ -19,7 +26,7 @@ void displayholds(object id, object response, object view, mixed args)
 {
   CHECKADMIN();
   view->add("holds", 
-    Fins.Model.find.held_messages((["List": list])) 
+    Fins.DataSource._default.find.held_messages((["List": list])) 
   );
 }
 
@@ -41,7 +48,7 @@ void displayhold(object id, object response, object view, mixed args)
   }
 
   view->add("hold", 
-    Fins.Model.find.held_messages_by_id(sid) 
+    Fins.DataSource._default.find.held_messages_by_id(sid) 
   );
 }
 
@@ -74,7 +81,7 @@ void updatemode(object id, object response, object view, mixed args)
     return;
   }
 
-  object s = Fins.Model.find.subscriptions_by_id(sid);
+  object s = Fins.DataSource._default.find.subscriptions_by_id(sid);
 
   if(s["List"] != list)
   {
@@ -147,7 +154,7 @@ void processhold(object id, object response, object view, mixed args)
     return;
   }
 
-  object s = Fins.Model.find.held_messages_by_id(sid);
+  object s = Fins.DataSource._default.find.held_messages_by_id(sid);
 
   if(s["List"] != list)
   {

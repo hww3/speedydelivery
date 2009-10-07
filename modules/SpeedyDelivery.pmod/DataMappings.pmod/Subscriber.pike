@@ -2,10 +2,10 @@
 
 inherit Fins.Model.DataObject;
 
-void post_define()
+void post_define(object context)
 {
 // Add any post configuration logic here
-  has_many_to_many("lists_owners", "List", "list_owner", "owned_list");
+  has_many_to_many(context, "lists_owners", "List", "list_owner", "owned_list");
 }
 
 void validate(mapping changes, object errors, object i)

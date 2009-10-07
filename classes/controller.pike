@@ -27,7 +27,7 @@ void start()
 
 void index(object id, object response, object view, mixed ... args)
 {
-  view->add("lists", Fins.Model.find.lists(([]),
+  view->add("lists", Fins.DataSource._default.find.lists(([]),
            Fins.Model.Criteria("ORDER BY name DESC")));
 }
 
