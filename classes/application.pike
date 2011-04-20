@@ -7,8 +7,12 @@ mapping event_handlers = ([]);
 mapping destination_handlers = ([]);
 mapping valid_addresses = ([]);
 
+mixed ds;
+
 void start()
-{
+{	
+  ds = master()->resolv("Fins.DataSource._default");
+werror("ds: %O\n", ds);
   load_default_destination_handler();
   load_plugins();
   start_queue_processor();
@@ -174,7 +178,7 @@ int trigger_event(string event, mixed ... args)
 object get_sys_pref(string pref)
 {
   object p;
-  catch(p = Fins.DataSource._default.find.preferences_by_alt(pref));
+  catch(p = ds->preferences_by_alt(pref));
   return p;
 }
 
@@ -186,7 +190,7 @@ object new_string_pref(string pref, string value)
   else 
   { 
      Log.info("Creating new preference object '" + pref  + "'.");
-     p = Fins.DataSource._default.new("Preference");
+     p = ds->new("Preference");
      p["name"] = pref;
      p["type"] = SpeedyDelivery.STRING;
      p["value"] = value;
@@ -203,7 +207,7 @@ object new_pref(string pref, string value, int type)
   if(p) return p;
   else 
   { 
-     p = Fins.DataSource._default.new("Preference");
+     p = ds->new("Preference");
      p["name"] = pref;
      p["type"] = type;
      p["description"] = "";
@@ -226,14 +230,14 @@ int is_list_owner(SpeedyDelivery.Objects.List list, SpeedyDelivery.Objects.Subsc
 
 void process_queue()
 {
-  object client = Mail.RobustClient(config["smtp"]->smtp_host ||"localhost", config["smtp"]->smtp_port||25);
+  object client = master()->resolv("Mail.RobustClient")(config["smtp"]->smtp_host ||"localhost", config["smtp"]->smtp_port||25);
 Log.debug("have Mail.RobustClient.");
   client->process_queue((int)(config["smtp"]->queue_interval||60), (int)(config["smtp"]->queue_length||5760));
 }
 
 int|array send_message(string sender, array recipients, string message)
 {
-    return Mail.RobustClient(config["smtp"]->smtp_host, config["smtp"]->smtp_port||25)->send_message(
+    return master()->resolv("Mail.RobustClient")(config["smtp"]->smtp_host, config["smtp"]->smtp_port||25)->send_message(
                    sender,
                    recipients, message);
 }
@@ -370,7 +374,7 @@ mixed is_valid_address(Mail.MailAddress a)
 
   object l;
 
-  if(catch(l = Fins.DataSource._default.find.lists_by_alt(x*"-")))
+  if(catch(l = ds->lists_by_alt(x*"-")))
   {
     Log.info("%s is not a valid list identifier.", a->localpart);
     return 0;
@@ -387,4 +391,4 @@ mixed is_valid_address(Mail.MailAddress a)
 void distribute_message(SpeedyDelivery.Request r)
 {
    function_object(destination_handlers->__default)->do_post(r);
-}
+} 

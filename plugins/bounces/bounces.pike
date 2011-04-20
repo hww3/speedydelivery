@@ -100,10 +100,9 @@ string extract_bouncer(SpeedyDelivery.Request r)
 array extract_bouncer_from_dsn(SpeedyDelivery.Request r)
 { 
   array bouncers = ({});
-  string u,h;
   string d = SpeedyDelivery.getfullbodymimetext(r->mime, "message/delivery-status");
   Log.debug("extracting bouncer from dsn.");
-  int matches;
+
   object rx = Regexp.SimpleRegexp(".*[ \t\r\n\<;](.*@.*)[ \\t\\r\\n\\>].*");
   foreach(d/"\n";; string l)
   {

@@ -3,6 +3,8 @@ import Fins;
 int __quiet = 1;
 inherit Fins.DocController;
 
+protected program __default_template = Fins.Template.Simple;
+
 //! this is a sample authentication handler module which can be customized
 //! to fit the particular needs of your application
 //!
@@ -26,6 +28,12 @@ function(Fins.Request,Fins.Response,Fins.Template.View:mixed) find_user = defaul
 //! user object with "email" and "password" fields, or a mapping with these
 //! two indices.
 function(Fins.Request,Fins.Response,Fins.Template.View:mixed) find_user_password = default_find_user_password;
+
+//! method which is called to reset a user's password.
+//! 
+//! @returns
+//!   0 upon failure, should also set response flash message describing the difficulty.
+function(Fins.Request,Fins.Response,Fins.Template.View,mixed,string:mixed) reset_password = default_reset_password;
 
 //! 
 object|function default_action;
@@ -53,6 +61,13 @@ static mixed default_find_user(Request id, Response response, Template.View t)
 
 //! the name of the template to use for sending the password via email.
 string password_template_name = "auth/sendpassword";
+
+//! default password changer
+static mixed default_reset_password(Request id, Response response, Template.View t, mixed user, string newpassword)
+{
+  user["password"] = newpassword;
+  return 1;
+}
 
 //! default user authenticator
 static mixed default_find_user_password(Request id, Response response, Template.View t)
@@ -142,6 +157,37 @@ public void logout(Request id, Response response, Template.View t, mixed ... arg
 
   response->flash("You have been successfully logged out.");
   response->redirect(id->referrer||default_action);
+}
+
+public void changepassword(Request id, Response response, Template.View t, mixed ... args)
+{
+  t->add("return_to", id->variables->return_to);
+
+  switch(id->variables->action)
+  {
+    case "Reset":
+        mixed r = find_user(id, response, t);
+        if(r)
+        {
+           // success!
+           if((id->variables->newpassword && strlen(id->variables->newpassword)) && id->variables->newpassword == id->variables->newpassword2 )
+           {
+              if(reset_password(id, response, t, r, id->variables->newpassword))
+               response->flash("Password reset successfully.");
+               response->redirect(login, ({}), (["return_to": id->variables->return_to]));
+           }
+           else
+           {
+             response->flash("No password supplied, or the new password does not match its confirmation.");
+           }
+        }
+        else
+        {
+           response->flash("Unable to find a user with that username and/or password.");
+        }
+
+  }
+ 
 }
 
 public void forgotpassword(Request id, Response response, Template.View t, mixed ... args)

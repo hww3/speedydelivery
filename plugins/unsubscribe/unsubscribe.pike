@@ -90,9 +90,11 @@ int confirm_unsubscription(SpeedyDelivery.Request r, string ln, string hc)
   Log.info("handling confirmation id %s for list %s.", hc, ln);
   if(r->list["name"] != ln) return 0;
 
+  object x;
   SpeedyDelivery.Objects.Confirmation c;
-  catch( c = Fins.Model.find.confirmations_by_alt(hc));
 
+  catch( x = Fins.Model.find.confirmations_by_alt(hc));
+  c = [object(SpeedyDelivery.Objects.Confirmation)]x;
   if(!c) return 1;
   if(c["conftype"] != r->functionname) return 0;
   if(c["list"] != r->list["name"]) return 0;

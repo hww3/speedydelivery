@@ -20,9 +20,9 @@ inherit Protocols.SMTP.Client;
   void process_queue(int queue_interval, int queue_length)
   {
     array qi;
-    Fins.Model.find.outbound_messages((["in_progress": 0, "queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_interval*60) )]));
+    Fins.DataSource._default.find.outbound_messages((["in_progress": 0, "queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_interval*60) )]));
     process_queue_items(qi||({}));
-    Fins.Model.find.outbound_messages((["queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_length*60) ) ]))->delete();
+    Fins.DataSource._default.find.outbound_messages((["queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_length*60) ) ]))->delete();
   }
 
   int|array(string) send_message(string from, array(string) to, string body)

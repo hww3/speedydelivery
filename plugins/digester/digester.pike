@@ -38,12 +38,12 @@ void schedule_process_digests()
 int check_digest_ready(string eventname, mapping event)
 {  
   int targetsize = event->list["_options"]["digest_size"] || 20;
-  object items = Fins.Model.find.archived_messages((["List": event->list, "digested": 0]));
+  array items = Fins.Model.find.archived_messages((["List": event->list, "digested": 0]));
   mixed e;
   if(items && sizeof(items) < targetsize) 
     return SpeedyDelivery.ok;
 
-  e = catch(process_digest(event->list));
+  e = catch(process_digest(event->list, items));
 
   if(e) Log.exception("An error occurred while digesting list " + event->list["name"] + ".\n", e);
   return SpeedyDelivery.ok;
@@ -64,10 +64,12 @@ void process_digests()
 
 // generate a mime digest for list l, marking any items as digested
 // saves the time of the digesting for digest spacing purposes.
-void process_digest(SpeedyDelivery.Objects.List l)
+void process_digest(SpeedyDelivery.Objects.List l, void|array items)
 {
   Log.info("Generating Digest for " + l["name"]);
-  object items = Fins.Model.find.archived_messages((["List": l, "digested": 0]));
+  if(!items)
+    items = Fins.Model.find.archived_messages((["List": l, "digested": 0]));
+
   l["_options"]["last_digested"] = time();
   if(!sizeof(items)) 
     return;
