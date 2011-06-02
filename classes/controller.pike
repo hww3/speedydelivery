@@ -53,5 +53,9 @@ void real_index(object id, object response, object view, mixed ... args)
 
 void install_index(object id, object response, object view, mixed ... args)
 {
+	// the next two lines are intended to quell a harmless error in the application log.
+    view->add("user", id->misc->session_variables->user);
+    view->add("request", id);
+
 	response->redirect(install);
 }
