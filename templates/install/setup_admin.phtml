@@ -1,0 +1,30 @@
+<html>
+<head>
+	<title>Set up Speedy Delivery</title>
+</head>
+<body>
+	<h1>Set up Administrator Account</h1>
+	
+<font color="red"><i><%flash%></i></font>
+<p>
+<%action_form action="do_setup_admin"%>
+
+Enter the email address for the person who will serve as the "administrator" of this Speedy Delivery server. This user will be able to create new lists as well as grant administrative privileges to other users.
+<p>	
+Administrator's Email:	<%input type="string" size="64" name="email"%>
+<br/>
+Administrator's Name:	<%input type="string" size="64" name="name"%>
+
+<p> Enter a password for the user.
+<p>
+		
+Enter Password:	<%input type="password" size="16" name="password"%><br/>
+Confirm Password:	<%input type="password" size="16" name="password2"%>
+
+<p>
+		<input type="submit" name="action" value="Create Administrator"/>
+	
+	</form>
+	
+	</body>
+</html>

@@ -7,24 +7,13 @@
 	
 <font color="red"><i><%flash%></i></font>
 <p>
-<%action_form action="do_setup"%>
-Let's get this party started!
+<%action_form action="setup_admin"%>
+Before SpeedyDelivery can start handling your mailing lists, there are a few settings that
+need to be configured. On the next few pages, you'll provide the values for these settings.
 <p>
-	Enter the email address for the person who will serve as the "administrator" of this Speedy Delivery server. This user will be able to create new lists as well as grant administrative privileges to other users.
-<p>	
-Administrator's Email:	<%input type="string" size="64" name="email"%>
-<br/>
-Administrator's Name:	<%input type="string" size="64" name="name"%>
-
-<p> Enter a password for the user.
-	<p>
-		
-Enter Password:	<%input type="password" size="16" name="password"%><p>
-Confirm Password:	<%input type="password" size="16" name="password2"%>
-	
-	
-	<p>
-		<input type="submit" name="action" value="Create Administrator"/>
+To get started, click on the button below.
+<p>
+		<input type="submit" name="action" value="Get Started"/>
 	
 	</form>
 	

@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title>Set up Speedy Delivery</title>
+</head>
+<body>
+	<h1>Set up Inbound/Outbound SMTP</h1>
+	
+<font color="red"><i><%flash%></i></font>
+<p>
+<%action_form action="do_setup_admin"%>
+
+SpeedyDelivery doesn't directly communicate with outside email SMTP servers. Instead, it sends outgoing email and receives incoming mail bound for lists by communicating with your existing SMTP mail servers. These settings are used to tell SpeedyDeliver how to communicate with the outside world.
+<p>
+Outbound email is usually straightforward, as the settings will be similar to setting up a mail client. You'll need to verify the name of the host running an SMTP server for your network. The default port, 25, is usually correct. 
+<p>	
+Outbound SMTP server hostname: <%input type="string" size="64" name="outbound_host" value="localhost"%>
+<br/>
+Outbound SMTP server port: <%input type="string" size="5" name="outbound_port" value="25"%>
+<p>
+Inbound email is can be a little tricky, as you'll need to configure the mail server handling incoming mail for your lists so that it forwards those messages on to SpeedyDelivery using SMTP. Normally, you would select one or more hostnames that will be used for mailing lists (such as lists.mydomain.com) and configure your mail server to forward all mail bound for those hostnames to SpeedyDelivery. Check the documentation for details on how to do this for your particular mail server software. The good news is that once you've done this, it will work for any mailing lists you set up for those hostnames, which can be a real time saver. The hostnames you pick for mailing list services will be specified on the next page.
+<p>
+In order for your mail service to deliver incoming mail to SpeedyDelivery, you'll need to specify a hostname and port for the incoming mail service to listen on. You'll want to pick a port that's not already being used, as well as an optional host name to use, in case your server has a lot of IP addresses and you don't want to listen from all of them (the default value of "*" means that the service will listen on all IP addresses configured on your server).
+	<p>	
+	Outbound SMTP server hostname: <%input type="string" size="64" name="inbound_host" value="*"%>
+	<br/>
+	Outbound SMTP server port: <%input type="string" size="5" name="inbound_port" value="25"%>
+	<p>
+
+		
+Enter Password:	<%input type="password" size="16" name="password"%><br/>
+Confirm Password:	<%input type="password" size="16" name="password2"%>
+
+<p>
+		<input type="submit" name="action" value="Create Administrator"/>
+	
+	</form>
+	
+	</body>
+</html>
