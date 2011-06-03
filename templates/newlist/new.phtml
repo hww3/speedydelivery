@@ -1,16 +1,16 @@
 <b>Create new list</b>
 <hr/>
 <%action_form method="post" action="do_new"%>
-<b>Name</b><br/>
+<b>Name</b>, the short name of the list, used as the username part of the address (that is, before the @ sign). Must start with a letter and may contain alpha numeric characters only.<br/>
 <input type="text" size="40" name="name" value="<%$name%>">
 <p/>
-<b>Title</b><br/>
+<b>Title</b>, a short description of the list, typically used in descriptive material about this list<br/>
 <input type="text" size="40" name="title" value="<%$title%>">
 <p/>
-<b>Description</b><br/>
+<b>Description</b>, a more in depth description of your new list.<br/>
 <textarea name="description"><%$description%></textarea>
 <p/>
-<b>Owner</b><br/>
+<b>Owner</b>, the user who will oversee day to day operation of the list. Must be a real mail address.<br/>
 <input type="text" size="40" name="owner_address" value="<%$owner_address%>">
 <p/>
 <input type="submit" value="Create List">
