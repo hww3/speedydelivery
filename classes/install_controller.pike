@@ -94,11 +94,112 @@ public void do_setup_admin(Request id, Response response, mixed ... args)
   response->redirect(setup_smtp);
 }
 
+public void do_setup_smtp(Request id, Response response, mixed ... args)
+{
+  mapping rv = id->variables + ([]);
+
+  if(!strlen(id->variables->outbound_host))
+  {
+	 response->flash("msg", "No outbound mail server specified.");
+	 response->redirect(setup_smtp, 0, rv);
+	 return;
+  }
+
+  if(!strlen(id->variables->outbound_port) || !((int)id->variables->outbound_port))
+  {
+	 response->flash("msg", "No outbound mail server port specified.");
+	 response->redirect(setup_smtp, 0, rv);
+	 return;
+  }
+
+  if(!strlen(id->variables->inbound_host))
+  {
+	 response->flash("msg", "No inbound mail server specified.");
+	 response->redirect(setup_smtp, 0, rv);
+	 return;
+  }
+
+  if(!strlen(id->variables->inbound_port) || !((int)id->variables->inbound_port))
+  {
+	 response->flash("msg", "No inbound mail server port specified.");
+	 response->redirect(setup_smtp, 0, rv);
+	 return;
+  }
+
+  // set up the connection to the mail host.
+  function sv = app->config->set_value;
+  sv("smtp", "smtp_host", id->variables->outbound_host);
+  sv("smtp", "smtp_port", id->variables->outbound_port);
+  sv("smtp", "listen_host", id->variables->inbound_host);
+  sv("smtp", "listen_port", id->variables->inbound_port);
+
+  response->redirect(setup_domains);
+}
 
 public void setup_smtp(Request id, Response response, mixed ... args)
 {
 	  object v = view->get_view("install/setup_smtp");
-	//  v->add("dbs", available_dbs());
+	  response->set_view(v);
+
+	  // the next two lines are intended to quell a harmless error in the application log.
+	  v->add("user", id->misc->session_variables->user);
+	  v->add("request", id);
+}
+
+public void do_setup_domains(Request id, Response response, mixed ... args)
+{
+  mapping rv = id->variables + ([]);
+
+  if(!strlen(id->variables->return_host))
+  {
+	 response->flash("msg", "Return mail hostname specified.");
+	 response->redirect(setup_domains, 0, rv);
+	 return;
+  }
+
+  if(!strlen(id->variables->listmaster))
+  {
+	 response->flash("msg", "Listmaster address not specified.");
+	 response->redirect(setup_domains, 0, rv);
+	 return;
+  }
+
+  if(!strlen(id->variables->domain))
+  {
+	 response->flash("msg", "No list service mail domains specified.");
+	 response->redirect(setup_domains, 0, rv);
+	 return;
+  }
+
+  Mail.MailAddress addr;
+  mixed err;
+  err = catch(addr = Mail.MailAddress(id->variables->listmaster));
+  if(!addr)
+  {
+    response->flash("msg", "Invalid listmaster email supplied: " + err[0]);
+    response->redirect(setup_domains, 0, rv);	
+    return;
+  }
+
+  array domain = ({});
+
+  foreach(id->variables->domain / "\n";;string d)
+  {
+    domain += ({String.trim_all_whites(d)});
+  }
+
+  // set up the connection to the mail host.
+  function sv = app->config->set_value;
+  sv("smtp", "domain", domain);
+  sv("smtp", "listmaster", (string)addr);
+  sv("smtp", "return_host", id->variables->return_host);
+
+  response->redirect(complete);
+}
+
+public void setup_domains(Request id, Response response, mixed ... args)
+{
+	  object v = view->get_view("install/setup_domains");
 	  response->set_view(v);
 
 	  // the next two lines are intended to quell a harmless error in the application log.
@@ -109,13 +210,13 @@ public void setup_smtp(Request id, Response response, mixed ... args)
 public void complete(Request id, Response response, mixed ... args)
 {
   object v = view->get_view("install/complete");
-//  v->add("dbs", available_dbs());
   response->set_view(v);
 
   // the next two lines are intended to quell a harmless error in the application log.
   v->add("user", id->misc->session_variables->user);
   v->add("request", id);
 
+  app->config->set_value("application", "installed", 1);
   app->controller->install = 0;
   app->reload_controllers();
 }

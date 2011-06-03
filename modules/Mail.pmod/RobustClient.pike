@@ -114,6 +114,7 @@ inherit Protocols.SMTP.Client;
     else // success!
     { 
       i->delete();
+      werror("successfully sent message.\n");
     }
 
   }
