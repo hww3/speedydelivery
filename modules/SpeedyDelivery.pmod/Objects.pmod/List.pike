@@ -8,7 +8,7 @@ string type_name = "List";
 
 int is_owner(SpeedyDelivery.Objects.Subscriber user)
 {
-  return has_value(this["list_owners"], user);
+  return user["is_admin"] || has_value(this["list_owners"], user);
 }
 
 
