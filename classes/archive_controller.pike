@@ -3,23 +3,41 @@ int __quiet = 1;
 
 void list(object id, object response, object view, mixed args)
 {
+  if(!args || !sizeof(args))
+  {
+    response->flash("msg", "No list specified.");
+    response->redirect(index);
+    return;
+  }
+
   object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
+  if(!list)
+  {
+    response->flash("msg", "List " + args[0] + " not found.");
+    response->redirect(index);
+    return;
+  }
+
+  view->add("list", list);
+}
+
+void index(object id, object response, object v, mixed args)
+{
 }
 
 void display(object id, object response, object v, mixed args)
 {
-  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
+//  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
 
-  array mails = Fins.DataSource._default.find.archived_messages(
-                               (["id":(int)args[1], "List": list]));
-  if(!mails || !sizeof(mails))
+  object mail = Fins.DataSource._default.find.archived_messages_by_id((int)args[0]);
+  if(!mail)
   {
-    response->flash("Requested Mail/List does not exist.");
+    response->flash("Requested Mail does not exist.");
     response->redirect(id->referrer || app->controller);
   }
-  v->add("list", list);
-  v->add("mail", mails[0]);
-  v->add("mime", message(mails[0]["content"]));
+  v->add("list", mail["List"]);
+  v->add("mail", mail);
+  v->add("mime", message(mail["content"]));
 }
 
 
@@ -32,6 +50,6 @@ class message
   static void create(string c)
   {
     ::create(c);
-    body = SpeedyDelivery.getfullbodymimetext(this,body);   
+    body = SpeedyDelivery.getfullbodymimetext(this);
   }
 }

@@ -32,11 +32,11 @@ string getfullbodytext(object mime, string|void s)
 
 //! gets all of the parts of the message that are of type mt, defaults
 //! to text/plain.
-string getfullbodymimetext(object mime, string mt, string|void s)
+string getfullbodymimetext(object mime, string|void mt, string|void s)
 {
   if(!mt) mt = "text/plain";
   if(!s) s = "";
-  if(has_prefix(mime->headers["content-type"], mt))
+  if(has_prefix(lower_case(mime->headers["content-type"]), mt))
     s += mime->getdata();
 
   if(mime->body_parts)
