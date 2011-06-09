@@ -1,0 +1,10 @@
+<h1>Archives for list <%$list.name%></h1>
+<p>
+<font class="flash"><i><%flash%></i></font>
+<p>
+
+<%foreach var="$list.Archived_messages" val="message"%>
+<%action_link action="display" args="$message.id"%><%$message.subject%></a><br/>
+<%end%>
+
+
