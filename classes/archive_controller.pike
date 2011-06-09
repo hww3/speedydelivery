@@ -11,12 +11,19 @@ void list(object id, object response, object view, mixed args)
   }
 
   object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
+
   if(!list)
   {
     response->flash("msg", "List " + args[0] + " not found.");
     response->redirect(index);
     return;
   }
+
+  array x = Fins.DataSource._default.context->query(
+	"SELECT strftime(archived_messages.archived, '%m%Y') AS date_group, COUNT(*) FROM archived_messages "
+	"WHERE list_id = " + list["id"] 
+	"GROUP BY date_group"
+	);
 
   view->add("list", list);
 }
@@ -27,8 +34,6 @@ void index(object id, object response, object v, mixed args)
 
 void display(object id, object response, object v, mixed args)
 {
-//  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
-
   object mail = Fins.DataSource._default.find.archived_messages_by_id((int)args[0]);
   if(!mail)
   {
