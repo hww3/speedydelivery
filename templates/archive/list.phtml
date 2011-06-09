@@ -2,6 +2,9 @@
 <p>
 <font class="flash"><i><%flash%></i></font>
 <p>
+<%foreach var="$date_groups" val="date_group"%>
+<%$date_group.date_group%> - <%$date_group.message_count%> messages<br/>
+<%end%>
 
 <%foreach var="$list.Archived_messages" val="message"%>
 <%action_link action="display" args="$message.id"%><%$message.subject%></a><br/>

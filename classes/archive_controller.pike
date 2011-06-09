@@ -20,12 +20,15 @@ void list(object id, object response, object view, mixed args)
   }
 
   array x = Fins.DataSource._default.query(
-	"SELECT strftime(archived_messages.archived, '%m%Y') AS date_group, COUNT(*) FROM archived_messages "
+	"SELECT strftime(archived_messages.archived, '%m%Y') AS date_group, COUNT(*) as message_count FROM archived_messages "
 	"WHERE list_id = " + list["id"]  +
-	" GROUP BY date_group"
+	" GROUP BY date_group HAVING message_count > 0"
 	);
 
+werror("LIST GROUPS: %O\n", x);
+
   view->add("list", list);
+  view->add("date_groups", x);
 }
 
 void index(object id, object response, object v, mixed args)
