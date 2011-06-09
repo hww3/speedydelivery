@@ -1,13 +1,12 @@
-<h1>Archives for list <%$list.name%></h1>
+<h1>Archives for list <%action_link controller="/listinfo" args="$list.name"%> 
+<%$list.name%></a></h1>
 <p>
 <font class="flash"><i><%flash%></i></font>
 <p>
 <%foreach var="$date_groups" val="date_group"%>
-<%$date_group.date_group%> - <%$date_group.message_count%> messages<br/>
-<%end%>
-
-<%foreach var="$list.Archived_messages" val="message"%>
-<%action_link action="display" args="$message.id"%><%$message.subject%></a><br/>
-<%end%>
-
+<%action_link action="messages" args="$list.name/$date_group.date_group"%>
+<%describe_date var="$date_group.nice_date_group"%></a>
+ - 
+<%$date_group.message_count%> 
+messages<br/> <%end%>
 

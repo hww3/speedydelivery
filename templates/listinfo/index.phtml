@@ -17,6 +17,10 @@ the sections below.
 <hr/>
 
 <%if data->user && data->subscription %>
+<b>Archives</b>
+<br/>
+<%action_link controller="/archive" action="list" args="$list.name"%>View</a> this list's archives.
+<p/>
 <b>Delivery Settings</b>
 <br/>
 You are subscribed to this list. You may modify the delivery settings for your

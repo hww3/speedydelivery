@@ -1,3 +1,7 @@
+<h1>Archives for list <%action_link action="list" args="$list.name"%><%$list.name%></a>
+ - 
+<%action_link action="messages" args="$list.name/$date_range_name"%><%describe_date 
+var="$date_range"%></a></h1>
 
 <b>Sender:</b> <%$mime.headers.from%><br/>
 <b>Subject:</b> <%$mime.headers.subject%><br/>
