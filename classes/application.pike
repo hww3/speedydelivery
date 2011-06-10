@@ -178,7 +178,7 @@ int trigger_event(string event, mixed ... args)
 object get_sys_pref(string pref)
 {
   object p;
-  catch(p = ds->preferences_by_alt(pref));
+  catch(p = ds->find->preferences_by_alt(pref));
   return p;
 }
 
@@ -374,7 +374,9 @@ mixed is_valid_address(Mail.MailAddress a)
 
   object l;
 
-  if(catch(l = ds->lists_by_alt(x*"-")))
+werror("looking for %O\n", x);
+
+  if(catch(l = ds->find->lists_by_alt(x*"-")))
   {
     Log.info("%s is not a valid list identifier.", a->localpart);
     return 0;

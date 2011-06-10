@@ -36,7 +36,7 @@ string getfullbodymimetext(object mime, string|void mt, string|void s)
 {
   if(!mt) mt = "text/plain";
   if(!s) s = "";
-  if(has_prefix(lower_case(mime->headers["content-type"]), mt))
+  if(has_prefix(lower_case(mime->headers["content-type"]||"text/plain"), mt))
     s += mime->getdata();
 
   if(mime->body_parts)

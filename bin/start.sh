@@ -1,5 +1,6 @@
 #!/bin/sh
-
+FINS_HOME=/opt/speedydelivery
+PATH=/usr/local/pike/7.8.352/bin:$PATH
   PIKE_ARGS=""
 
   if [ x$FINS_HOME != "x" ]; then

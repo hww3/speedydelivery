@@ -2,11 +2,14 @@
 
 inherit Fins.Model.DataObject;
 
-void post_define()
+void post_define(Fins.Model.DataModelContext context)
 {
 // Add any post configuration logic here
-
+  add_field(context, Fins.Model.TransformField("mime", "content", get_mime));
 // set_alternate_key("myalternatekey");
 
 }
-
+Mail.RobustMIMEMessage get_mime(mixed content, object instance)
+{
+  return Mail.RobustMIMEMessage(content);
+}

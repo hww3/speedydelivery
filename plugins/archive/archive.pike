@@ -23,6 +23,15 @@ int archive_message(string eventname, mapping event, mixed ... args)
    m = SpeedyDelivery.Objects.Archived_message();
    m["List"] = event->request->list;
    m["envelope_from"] = (string)event->request->sender;
+
+   // the envelope_from address almost never includes a nice name.
+   if(event->mime && event->mime->headers->from)
+   {
+     object addr;
+     catch(addr = Mail.MailAddress(event->mime->headers->from));
+     if(addr)
+      m["envelope_from"] = (string)addr;
+   }
    m["messageid"] = (string)event->request->mime->headers["message-id"];
    if(event->request->mime->headers["in-reply-to"])
      m["referenceid"] = (string)event->request->mime->headers["in-reply-to"];

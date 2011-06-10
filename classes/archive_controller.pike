@@ -33,7 +33,6 @@ void list(object id, object response, object view, mixed args)
   foreach(x;;mapping y)
     y["nice_date_group"] = Calendar.parse("%Y-%M %D", y->date_group + " 1")->month();
 
-//werror("LIST: %O\n", x);
   view->add("list", list);
   view->add("date_groups", x);
 }
@@ -74,7 +73,6 @@ void messages(object id, object response, object view, mixed args)
     return;
   }
 
-werror("month: %O\n", month);
   array messages = Fins.DataSource._default.find.archived_messages((["List": list, "archived": month]));
   view->add("list", list);
   view->add("date_range", month);
@@ -110,23 +108,29 @@ void display(object id, object response, object v, mixed args)
     response->redirect(id->referrer || app->controller);
   }
   object month = mail["archived"]->month();
+
+  string ref = mail["referenceid"];
+  string followups = mail["messageid"];
+
+  if(ref)
+  {
+    array reference;
+    reference = Fins.DataSource._default.find.archived_messages((["List": list["id"], "messageid": ref]));
+
+    if(sizeof(reference))
+      v->add("reference", reference[0]);
+  }
+  if(followups)
+  {
+    array reference;
+    reference = Fins.DataSource._default.find.archived_messages((["List": list["id"], "referenceid": followups]));
+
+    if(sizeof(reference))
+      v->add("followups", reference);
+  }
   v->add("list", mail["List"]);
   v->add("date_range", month);
   v->add("date_range_name", sprintf("%4d-%02d", month->year_no(), month->month_no()));
   v->add("mail", mail);
-  v->add("mime", message(mail["content"]));
-}
-
-
-class message
-{
-  inherit MIME.Message;
-
-  string body;
-
-  static void create(string c)
-  {
-    ::create(c);
-    body = SpeedyDelivery.getfullbodymimetext(this);
-  }
+  v->add("mime", Mail.RobustMIMEMessage(mail["content"]));
 }

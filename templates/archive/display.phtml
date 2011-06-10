@@ -3,8 +3,25 @@
 <%action_link action="messages" args="$list.name/$date_range_name"%><%describe_date 
 var="$date_range"%></a></h1>
 
-<b>Sender:</b> <%$mime.headers.from%><br/>
+<b>From:</b> <%format_mail_address full="true" var="$mime.headers.from"%><br/>
 <b>Subject:</b> <%$mime.headers.subject%><br/>
 <b>Date:</b> <%$mime.headers.date%><br/>
 <p>
 <%autoformat var="$mime.body"%>
+<p>
+<%if data->reference!=0 %>
+<p>
+In Reply To: 
+<%action_link action="display" args="$list.name/$reference.id"%>
+<%$reference.subject%></a>
+<%endif%>
+
+<%if data->followups!=0 %>
+<p>
+Replies: 
+<%foreach var="$followups" val="followup"%>
+<li><%action_link action="display" args="$list.name/$followup.id"%>
+<%$followup.subject%></a>
+<%end%>
+<%endif%>
+
