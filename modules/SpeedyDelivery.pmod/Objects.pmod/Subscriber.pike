@@ -19,7 +19,10 @@ int has_bounced(List list)
     this["bounces"] = 0;
   }
   else
-    this["bounces"]++;
+  {	
+	int i = this["bounces"];
+	this["bounces"] = (i+1);
+  }
 }
 
 Subscription get_subscription(List list)

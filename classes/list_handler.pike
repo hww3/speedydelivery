@@ -49,6 +49,7 @@ int handle_post(SpeedyDelivery.Request request)
   return 250;
 }
 
+// TODO this should be asynchronous.
 void do_post(object request)
 {
    array fails;
@@ -76,7 +77,11 @@ Log.exception("error", e);
       Log.debug("the following failures occurred: %O", fails);
       array f = Fins.DataSource._default.find.subscribers(
                          (["email": Fins.Model.InCriteria(fails)]));
-      f["bounces"]++;
+      foreach(f;; object fa)
+      {
+		int i = fa["bounces"];
+		fa["bounces"] = (i+1);
+      }        
     }
 
     if(app->trigger_event("postDelivery",
