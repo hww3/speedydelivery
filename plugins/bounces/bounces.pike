@@ -75,7 +75,7 @@ int handle_bounce(SpeedyDelivery.Request r)
     app->send_message_as_attachment_to_list_owner(r->list, subject, message, r->mime);
   }
 
-  Stdio.write_file("/tmp/spdbounce.txt", (string)r->mime);
+//  Stdio.write_file("/tmp/spdbounce.txt", (string)r->mime);
   return 0;
 }
 
