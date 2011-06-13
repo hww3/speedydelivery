@@ -24,7 +24,7 @@ string getfullbodytext(object mime, string|void s)
   if(mime->body_parts)
   {
     foreach(mime->body_parts;; object nm)
-      s += getfullbodytext(nm, s);
+      s += getfullbodytext(nm);
   }
 
   return s;
@@ -36,13 +36,16 @@ string getfullbodymimetext(object mime, string|void mt, string|void s)
 {
   if(!mt) mt = "text/plain";
   if(!s) s = "";
-  if(has_prefix(lower_case(mime->headers["content-type"]||"text/plain"), mt))
+  if(has_prefix(lower_case(mime->headers["content-type"]||"text/plain"), mt) || (!mime->headers["content-type"] && mt=="text/plain"))
+  {
     s += mime->getdata();
-
+  }
   if(mime->body_parts)
   {
     foreach(mime->body_parts;; object nm)
-      s += getfullbodymimetext(nm, mt, s);
+    {
+      s += getfullbodymimetext(nm, mt);
+    }    
   }
 
   return s;
