@@ -317,6 +317,7 @@ int user_filter(function yield, Fins.Request id, Fins.Response response, mixed .
    {
      d->add("user", id->misc->session_variables->user);
      d->add("request", id);
+     d->add("controller", get_path_for_controller(id->controller));
    }   
    return 1;
 }
@@ -338,6 +339,7 @@ int mandatory_user_filter(function yield, Fins.Request id, Fins.Response respons
    {
      d->add("user", id->misc->session_variables->user);
      d->add("request", id);
+     d->add("controller", get_path_for_controller(id->controller));
    }
 
    return 1;
