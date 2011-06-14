@@ -26,12 +26,11 @@
 			
 			<!-- tabs -->
 			<ul>
-				<li<%if data->controller =="controller" %> id="current" <%endif%>><%action_link controller="/"%><span>Home</span></a></li>
-				<li<%if data->controller = "about"%> id="current" <%endif%>><%action_link controller="/" 
-action="about"%><span>About</span></a></li>			 
+	<li<%if data->controller =="/" %> id="current" <%endif%>><%action_link controller="/"%><span>Home</span></a></li>
+	<li<%if data->controller == "/about"%> id="current" <%endif%>><%action_link controller="/about"%><span>About</span></a></li>			 
 <%if data->user%>
-	<li<%if data->controller = "about"%> id="current" <%endif%>><%action_link controller="/account"%><span>My 
-Account</span></a></li>			
+	<li<%if data->controller == "/mylists"%> id="current" <%endif%>><%action_link controller="/mylists"%><span>My Lists</span></a></li>			
+	<li<%if data->controller == "/account"%> id="current" <%endif%>><%action_link controller="/account"%><span>My Account</span></a></li>			
 <%endif%>
 			</ul>
 											

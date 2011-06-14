@@ -1,26 +1,4 @@
 <h1>Welcome to SpeedyDelivery!</h1>
-<% if data->user %>
-<!-- if we're logged in, provide a quick rundown of lists we're subscribed to. -->
-<b>My Lists</b>
-<p>
-The following table contains all lists you're subscribed to.
-<p>
-<table>
-<%foreach var="$user.Subscriptions" val="subscription"%>
-<tr>
-<td>
-  <%action_link controller="/listinfo" args="$subscription.List.name"%><%$subscription.List.name%></a>
-</td>
-<td>
-<%autoformat var="$subscription.List.title"%>
-</td>
-</tr>
-<%end%>
-</table>
-<p/>
-<hr/>
-<% else %>
-<% endif %>
 <b>Lists available at this server</b>
 <p>
 The following table contains all the lists available from this 

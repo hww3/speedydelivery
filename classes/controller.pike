@@ -8,7 +8,9 @@ Fins.FinsController listinfo;
 Fins.FinsController listadmin;
 Fins.FinsController commands;
 Fins.FinsController account;
+Fins.FinsController mylists;
 Fins.FinsController archive;
+Fins.FinsController about;
 
 // used only for installing
 Fins.FinsController install;
@@ -31,7 +33,9 @@ void start()
     listadmin = load_controller("admin_controller");
     commands = load_controller("command_controller");
     account = load_controller("account_controller");
+    mylists = load_controller("mylists_controller");
     archive = load_controller("archive_controller");
+    about = load_controller("about_controller");
 
     around_filter(app->user_filter);
     _index = real_index;
@@ -59,10 +63,4 @@ void install_index(object id, object response, object view, mixed ... args)
     view->add("request", id);
 
 	response->redirect(install);
-}
-
-//!
-public void about(Fins.Request request, Fins.Response response, Fins.Template.View view, mixed ... args) {
-    view->add("about", 1);
-    return;
 }
