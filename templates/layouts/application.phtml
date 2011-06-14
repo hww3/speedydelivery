@@ -26,11 +26,10 @@
 			
 			<!-- tabs -->
 			<ul>
-				<li <%if data->index %>id="current"<%endif%>><a href="/"><span>Home</span></a></li>
-				
-				<li <%if data->index %>id="current"<%endif%>><a href="/about"><span>About</span></a></li>			
+				<li<%if data->index %> id="current" <%endif%>><%action_link controller="/"%><span>Home</span></a></li>
+				<li<%if data->about%> id="current" <%endif%>><%action_link controller="/" action="about"%><span>About</span></a></li>			 
 <%if data->user%>
-	<li><a href="/account"><span>My Account</span></a></li>			
+	<li><%action_link controller="/account"%><span>My Account</span></a></li>			
 <%endif%>
 			</ul>
 											
@@ -50,8 +49,7 @@
        	<div id="main">
 
 <%if data->user %>
-Logged in as <%$user.email%>. <%action_link controller="/auth" action="logout" return_to="$request.not_query"%>Logout</a> / <%action_link
-controller="/account" %>Edit</a> your user info.
+Logged in as <%$user.email%>. <%action_link controller="/auth" action="logout" return_to="$request.not_query"%>Logout</a> / 
   <%if data->user["is_admin"] %>
       / <%action_link controller="/newlist"%>Create List</a>
   <%endif%>
@@ -80,7 +78,7 @@ settings.
 	    	<a href="http://hg.welliver.org/SpeedyDelivery">speedydelivery</a>
 
 		    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		    <a href="/">Home</a>
+		    <%action_link controller="/"%>Home</a>
 		</p>
 		
 </div>	
