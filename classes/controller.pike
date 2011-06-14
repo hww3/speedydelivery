@@ -42,6 +42,7 @@ function(object,object,object,mixed...:void) _index;
 
 void index(mixed ... args)
 {
+	view->add("index", 1);
 	_index(@args);
 }
 
@@ -62,5 +63,6 @@ void install_index(object id, object response, object view, mixed ... args)
 
 //!
 public void about(Fins.Request request, Fins.Response response, Fins.Template.View view, mixed ... args) {
+	view->add("about", 1);
     return;
 }

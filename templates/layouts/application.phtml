@@ -26,8 +26,12 @@
 			
 			<!-- tabs -->
 			<ul>
-				<li id="current"><a href="/"><span>Home</span></a></li>
-				<li><a href="/about"><span>About</span></a></li>			
+				<li <%if data->index %>id="current"<%endif%>><a href="/"><span>Home</span></a></li>
+				
+				<li <%if data->index %>id="current"<%endif%>><a href="/about"><span>About</span></a></li>			
+<%if data->user%>
+	<li><a href="/account"><span>My Account</span></a></li>			
+<%endif%>
 			</ul>
 											
 		</div>
