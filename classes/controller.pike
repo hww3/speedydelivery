@@ -59,3 +59,8 @@ void install_index(object id, object response, object view, mixed ... args)
 
 	response->redirect(install);
 }
+
+//!
+public void about(Fins.Request request, Fins.Response response, Fins.Template.View view, mixed ... args) {
+    return;
+}

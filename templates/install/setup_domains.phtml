@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>Set up Speedy Delivery</title>
+</head>
+<body>
+	<h1>Set up Mail Domains</h1>
+	
+<font color="red"><i><%flash%></i></font>
+<p>
+<%action_form action="do_setup_domains"%>
+The Listmaster address is where all mail that SpeedyDelivery is unable to process gets sent. It must be a real email address, preferably one that is monitored by a real person. It should not be an address that SpeedyDelivery would otherwise handle, so make sure that your mail server will not route mail to this address through SpeedyDelivery. 
+<p>
+Listmaster Email Address: <%input type="string" size="64" name="listmaster" mandatory="true"%>
+<p>
+For each list you create, SpeedyDelivery creates a number of "magic" email addresses that allow certain features, such as for subscribing. These email addresses will use the following fully qualified host or domain name, such as lists.mydomain.com. Additionally, mail that SpeedyDelivery sends as itself will be sent from this email domain.
+<p>
+Return Hostname: <%input type="string" size="64" name="return_host" mandatory="true"%>
+<p>
+In the following box, enter all of the host names and/or domains for which SpeedyDelivery should consider its own. Enter each domain on its own line. For example, your lists might be hosted at lists.mydomain.com and listserv.mydomain2.com
+<p>
+Inbound Email Domains:
+<br>
+<%textarea name="domain" mandatory="true"%>
+<p>
+<i>Note: These settings are all contained within the SpeedyDelivery configuration file, and may be changed manually at a later time.</i>
+<p>
+<input type="submit" name="action" value="Configure Mail Domains"/>
+	
+	</form>
+	
+	</body>
+</html>
