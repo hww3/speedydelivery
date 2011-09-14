@@ -107,6 +107,13 @@ void search(object id, object response, object v, mixed args)
     return;
   }
 
+  if(!id->variables->q)
+  {
+    response->flash("msg", "No search query provided.");
+    response->redirect(this->list, args);
+    return;
+  }  
+
   object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
 
   if(!list)
@@ -119,13 +126,6 @@ void search(object id, object response, object v, mixed args)
   object c = Protocols.XMLRPC.Client(p["url"] + "/search/");
 
   string indexname = "SpeedyDelivery_" + args[0];
-
-  if(!id->variables->q)
-  {
-    response->flash("msg", "No search query provided.");
-    response->redirect(this->list, args);
-    return;
-  }  
 
   array x = c["search"](indexname, id->variables->q, "contents")[0];
 

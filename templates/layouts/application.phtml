@@ -39,12 +39,12 @@
 		<div id="header-logo">			
 			
 			<div id="logo">speedy<span class="red">delivery</span></div>		
-			
-			<form method="post" class="search" action="#">
-				<p><input name="search_query" class="textbox" type="text" />
+			<%if data["have_fulltext"] && data["list"] %>
+			<form method="post" class="search" action="<%action_url controller="/archive" action="search" args="$list.name"%>">
+				<p><input name="q" class="textbox" type="text" />
   				<input name="search" class="searchbutton" value="Search" type="submit" /></p>
 			</form>
-						
+			<%endif%>						
 		</div>
 		
        	<div id="main">
