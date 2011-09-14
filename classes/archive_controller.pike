@@ -58,7 +58,7 @@ void messages(object id, object response, object view, mixed args)
   if(sizeof(args) < 2)
   {
     response->flash("msg", "No date range specified.");
-    response->redirect(list, ({list["name"]}));
+    response->redirect(this->list, ({list["name"]}));
     return;
   }
 
@@ -69,7 +69,7 @@ void messages(object id, object response, object view, mixed args)
   if(!month)
   {
     response->flash("msg", "Invalid date range specified.");
-    response->redirect(list, ({list["name"]}));
+    response->redirect(this->list, ({list["name"]}));
     return;
   }
 
@@ -81,6 +81,58 @@ void messages(object id, object response, object view, mixed args)
 
 void index(object id, object response, object v, mixed args)
 {
+}
+
+void search(object id, object response, object v, mixed args)
+{
+  mapping p = app->config["full_text"];
+  if(!p)
+  {
+    response->flash("msg", "No full text engine configured.");
+    response->redirect(messages, args);
+    return;
+  }
+
+  if(!p["url"])
+  {
+    response->flash("msg", "No full text engine url configured");
+    response->redirect(messages, args);
+    return;
+  }
+
+  if(!args || !sizeof(args))
+  {
+    response->flash("msg", "No list specified.");
+    response->redirect(index);
+    return;
+  }
+
+  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
+
+  if(!list)
+  {
+    response->flash("msg", "List " + args[0] + " not found.");
+    response->redirect(index);
+    return;
+  }
+
+  object c = Protocols.XMLRPC.Client(p["url"] + "/search/");
+
+  string indexname = "SpeedyDelivery_" + args[0];
+
+  if(!id->variables->q)
+  {
+    response->flash("msg", "No search query provided.");
+    response->redirect(this->list, args);
+    return;
+  }  
+
+  array x = c["search"](indexname, id->variables->q, "contents")[0];
+
+  v->add("results", Fins.DataSource._default.find.archived_messages((["List": list["id"], "id": x->handle])));
+  v->add("list", list);  
+  v->add("q", id->variables->q);
+
 }
 
 void display(object id, object response, object v, mixed args)
@@ -132,5 +184,7 @@ void display(object id, object response, object v, mixed args)
   v->add("date_range", month);
   v->add("date_range_name", sprintf("%4d-%02d", month->year_no(), month->month_no()));
   v->add("mail", mail);
+  if(id->variables->ftq)
+    v->add("ftq", id->variables->ftq);
   v->add("mime", Mail.RobustMIMEMessage(mail["content"]));
 }

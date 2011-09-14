@@ -337,6 +337,9 @@ int mandatory_user_filter(function yield, Fins.Request id, Fins.Response respons
 
    if(d)
    {
+     mapping p = config["full_text"];
+      if(p) d->add("have_fulltext", 1);
+
      d->add("user", id->misc->session_variables->user);
      d->add("request", id);
      d->add("controller", get_path_for_controller(id->controller));

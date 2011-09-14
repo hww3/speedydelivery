@@ -74,7 +74,10 @@ void doUpdateIndex(string eventname, mapping event, object message)
   {
     int e = c["exists"](indexname)[0];
     if(!e)
+    {
+      Log.info("creating new full text index " + indexname + " on " + p["url"] + ".");
       c["new"](indexname);
+    }
     checked_exists = 1;
   }
 

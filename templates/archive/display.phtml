@@ -1,7 +1,13 @@
 <h1>Archives for list <%action_link action="list" args="$list.name"%><%$list.name%></a>
  - 
+<%if data["ftq"] %>
+<%action_link action="search" args="$list.name" q="$ftq"%>Search Results for '<%$ftq%>'</a>
+
+<%else%>
 <%action_link action="messages" args="$list.name/$date_range_name"%><%describe_date 
-var="$date_range"%></a></h1>
+var="$date_range"%></a>
+<%endif%>
+</h1>
 
 <b>From:</b> <%format_mail_address full="true" var="$mime.headers.from"%><br/>
 <b>Subject:</b> <%$mime.headers.subject%><br/>

@@ -3,6 +3,12 @@
 <p>
 <font class="flash"><i><%flash%></i></font>
 <p>
+<%if data["have_fulltext"]%>
+<form action="<%action_url action="search" args="$list.name"%>">
+Search the <%$list.name%> archives: <input type="string" size="30" name="q">
+<input type="submit" value="search">
+</form>
+<%endif %>
 <%foreach var="$date_groups" val="date_group"%>
 <%action_link action="messages" args="$list.name/$date_group.date_group"%>
 <%describe_date var="$date_group.nice_date_group"%></a>

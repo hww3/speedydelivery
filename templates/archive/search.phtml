@@ -1,0 +1,28 @@
+<h1>Archives for list <%action_link action="list" args="$list.name"%><%$list.name%></a>
+ - Search Results for '<%$q%>'</h1>
+<p>
+<p>
+<font class="flash"><i><%flash%></i></font>
+<p>
+<table>
+<tr>
+<th width=40%>Subject</th>
+<th width=35%>Sender</th>
+<th width=25%>Date</th>
+</tr>
+<%foreach var="$results" val="message"%>
+<tr>
+<td>
+<%action_link action="display" args="$list.name/$message.id" ftq="$q"%>
+<%$message.subject%>
+</a> 
+</td>
+<td>
+<%format_mail_address var="$message.envelope_from" name="true"%>
+</td>
+<td>
+<%describe_datetime var="$message.archived"%>
+</td>
+</tr>
+<%end%>
+<table>
