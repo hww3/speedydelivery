@@ -1,0 +1,29 @@
+Changes in 1.0.x
+
+added full text search of archives
+maybe a better fix for mime body collation
+some layout to make things look nice
+allow admin users to administer any list.
+some more work on setup and install.
+fix password mailing
+new list functionality.
+added start of settings page
+added list holds interface.
+adding beginnings of hold queue manipulation
+added some simple account management features.
+beginning of user account manipulation.
+queue is now processed on a somewhat random interval based on
+added address for contacting the list owners
+added a number of "list management info" headers.
+handle x-loop
+we can set the mode via web interface.
+login is now optional, and we recognize if you're subscribed to a list.
+adding support for queue processing
+digest scheduling and size limitations (24 hours or 20 mails, whichever
+added subscription mode
+added unsubscribe via web and an (currently unused) digest mode option
+added start of archiving messages
+added unsubscribe support
+we added confirmation type, for support of unsubscribe, etc.
+added mandatory confirmation
+basic subscription email going out
