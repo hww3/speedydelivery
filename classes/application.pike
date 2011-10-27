@@ -12,7 +12,6 @@ mixed ds;
 void start()
 {	
   ds = master()->resolv("Fins.DataSource._default");
-werror("ds: %O\n", ds);
   load_default_destination_handler();
   load_plugins();
   start_queue_processor();
@@ -104,7 +103,7 @@ void start_plugins()
            // we don't start up plugins that explicitly tell us not to.
            if(plugin->enabled && !plugin->enabled())
              continue;
-           Log.debug("Starting " + name);
+           Log.info("Starting " + name);
 
                 if(plugin->query_preferences && functionp(plugin->query_preferences))
                 {
@@ -185,7 +184,7 @@ object get_sys_pref(string pref)
 object new_string_pref(string pref, string value)
 {
   object p;
-  catch(p = get_sys_pref(pref));
+  (p = get_sys_pref(pref));
   if(p) return p;
   else 
   { 
@@ -203,10 +202,10 @@ object new_string_pref(string pref, string value)
 object new_pref(string pref, string value, int type)
 {
   object p;
-  catch(p = get_sys_pref(pref));
+  (p = get_sys_pref(pref));
   if(p) return p;
   else 
-  { 
+  {  Log.info("Creating new preference object '" + pref + "'.");
      p = ds->new("Preference");
      p["name"] = pref;
      p["type"] = type;
@@ -224,7 +223,7 @@ int is_list_master(SpeedyDelivery.Objects.Subscriber user)
 
 int is_list_owner(SpeedyDelivery.Objects.List list, SpeedyDelivery.Objects.Subscriber user)
 {
-  return has_value(list["list_owners"], user);
+  return user["is_admin"] || has_value(list["list_owners"], user);
 }
 
 
@@ -381,8 +380,6 @@ mixed is_valid_address(Mail.MailAddress a)
   }
 
   object l;
-
-werror("looking for %O\n", x);
 
   if(catch(l = ds->find->lists_by_alt(x*"-")))
   {

@@ -82,7 +82,7 @@ CREATE TABLE confirmations
 
 CREATE TABLE preferences (
   id int(11) NOT NULL auto_increment,
-  name char(64) NOT NULL default '',
+  name char(96) NOT NULL default '' UNIQUE,
   description char(255) NOT NULL default '',
   type int(1) NOT NULL default 0,
   value char(64) NOT NULL default '',

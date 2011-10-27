@@ -80,7 +80,7 @@ CREATE TABLE archived_messages
 
 CREATE TABLE preferences (
   id integer PRIMARY KEY,
-  name char(64) NOT NULL default '',
+  name char(96) NOT NULL default '' UNIQUE,
   description char(255) NOT NULL default '',
   type integer NOT NULL default 0,
   value char(64) NOT NULL default ''
