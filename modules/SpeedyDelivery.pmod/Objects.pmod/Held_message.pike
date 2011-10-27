@@ -18,7 +18,7 @@ void new_for_list_action(object list, string action, string sender, object mime)
 
 void release()
 {
-  object app = master_object->context->app;
+  object app = context->app;
   object mime = MIME.Message(this["content"]);
   string sender = this["envelope_from"];
   string raw;
@@ -29,6 +29,6 @@ void release()
 
   object r = SpeedyDelivery.Request(app, mime, sender, recipient, raw, smtp);
 
-  master_object->context->app->distribute_message(r);
+  context->app->distribute_message(r);
   delete();  
 }
