@@ -42,7 +42,7 @@ void update(object id, object response, object view, mixed args)
     }
   }
 
-  response->redirect(index, ({time()}));
+  response->redirect(index, ({(string)time()}));
 
   return;
 }

@@ -88,6 +88,8 @@ void doUpdateIndex(string eventname, mapping event, object message)
   string content;
    content = Tools.String.textify(
                 SpeedyDelivery.getfullbodytext(event->request->mime, content));
+    Log.info("submitting message %O for indexing.", message);
+
   c["add"](indexname, event->request->mime->headers->subject, 
       t, content,
       (string)message["id"],

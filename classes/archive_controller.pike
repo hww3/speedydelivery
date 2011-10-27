@@ -123,13 +123,14 @@ void search(object id, object response, object v, mixed args)
     return;
   }
 
-  object c = Protocols.XMLRPC.Client(p["url"] + "/search/");
+  object c = Protocols.XMLRPC.Client(p["url"] + "/search/?PSESSIONID=123");
 
   string indexname = "SpeedyDelivery_" + args[0];
 
   array x = c["search"](indexname, id->variables->q, "contents")[0];
 
-  v->add("results", Fins.DataSource._default.find.archived_messages((["List": list["id"], "id": x->handle])));
+  if(sizeof(x->handle))
+    v->add("results", Fins.DataSource._default.find.archived_messages((["List": list["id"], "id": x->handle])));
   v->add("list", list);  
   v->add("q", id->variables->q);
 

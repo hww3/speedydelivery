@@ -95,10 +95,12 @@ int confirm_subscription(SpeedyDelivery.Request r, string ln, string hc)
 {
   Log.info("handling confirmation id %s for list %s.", hc, ln);
   if(r->list["name"] != ln) return 0;
+  Log.info("=> handling confirmation id %s for list %s.", hc, ln);
   object x;
+  catch( x = Fins.Model.find.confirmations_by_alt(hc));
   SpeedyDelivery.Objects.Confirmation c;
   c = [object(SpeedyDelivery.Objects.Confirmation)]x;
-  catch( x = Fins.Model.find.confirmations_by_alt(hc));
+  Log.info("handling confirmation %O for list %s.", x, r->list["name"]);
 
   if(!c) return 1;
   if(c["conftype"] != r->functionname) return 0;

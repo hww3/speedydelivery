@@ -80,6 +80,7 @@ void process_digest(SpeedyDelivery.Objects.List l, void|array items)
   {     
     m->headers["content-disposition"]="attachment";
     m->setdisp_param("filename", m->headers["subject"]);
+    werror("m: " + m->getdata());
     it[q] = MIME.Message((string)m, (["content-type": "message/rfc822"]));
   }
 
