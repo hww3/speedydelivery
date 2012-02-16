@@ -80,7 +80,13 @@ void process_digest(SpeedyDelivery.Objects.List l, void|array items)
   {     
     m->headers["content-disposition"]="attachment";
     m->setdisp_param("filename", m->headers["subject"]);
-    werror("m: " + m->getdata());
+    string dm;
+    if(catch(dm = (string)m)) 
+    {
+      // we don't want the digest to fail if one message is bogus.
+      Log.info("Not including message %O due to invalid MIME.", items[q]["id"]);
+      continue; 
+    }
     it[q] = MIME.Message((string)m, (["content-type": "message/rfc822"]));
   }
 
