@@ -93,7 +93,9 @@ void process_digest(SpeedyDelivery.Objects.List l, void|array items)
   object mime = MIME.Message("Your digest!", 
          (["content-type": "multipart/mixed", "subject": subject]), 
               ({MIME.Message("Your digest!", ([]))}) + it);
-  items["digested"] = 1; 
+
+  foreach(items;;mixed item) item["digested"] = 1;
+
 //werror("MIME: %O\n", (string)mime);
   app->send_message_for_list(
          l, Fins.Model.find.subscriptions((["List": l, "mode": 
