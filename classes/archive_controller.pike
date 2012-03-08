@@ -123,11 +123,12 @@ void search(object id, object response, object v, mixed args)
     return;
   }
 
-  object c = Protocols.XMLRPC.Client(p["url"] + "/search/?PSESSIONID=123");
-
   string indexname = "SpeedyDelivery_" + args[0];
 
-  array x = c["search"](indexname, id->variables->q, "contents")[0];
+  object c = FullText.SearchClient(p["url"], indexname, p["auth"]);
+
+
+  array x = c->search(id->variables->q);
 
   if(sizeof(x->handle))
     v->add("results", Fins.DataSource._default.find.archived_messages((["List": list["id"], "id": x->handle])));

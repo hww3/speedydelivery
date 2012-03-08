@@ -66,17 +66,17 @@ void doUpdateIndex(string eventname, mapping event, object message)
     return;
   }
 
-  object c = Protocols.XMLRPC.Client(p["url"] + "/update/");
-
   string indexname = "SpeedyDelivery_" + event->request->list["name"];
+  object c = FullText.UpdateClient(p["url"], indexname, p["auth"]);
+
 
   if(!checked_exists)
   {
-    int e = c["exists"](indexname)[0];
+    int e = c->exists(indexname);
     if(!e)
     {
       Log.info("creating new full text index " + indexname + " on " + p["url"] + ".");
-      c["new"](indexname);
+      c->new(indexname);
     }
     checked_exists = 1;
   }
@@ -90,10 +90,10 @@ void doUpdateIndex(string eventname, mapping event, object message)
                 SpeedyDelivery.getfullbodytext(event->request->mime, content));
     Log.info("submitting message %O for indexing.", message);
 
-  c["add"](indexname, event->request->mime->headers->subject, 
+  c->add(event->request->mime->headers->subject, 
       t, content,
       (string)message["id"],
-      Tools.String.make_excerpt(content),      
+      Tools.String.make_excerpt(content), 0,      
       "text/mime-message");
 }
 
