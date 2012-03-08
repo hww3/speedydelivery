@@ -32,7 +32,7 @@ mapping|void args)
         }
         else if(args->name)
         {
-           return replace(addr->name, ({"<", ">", "&"}), ({"&lt;", "&gt;", "&amp;"}));
+           return replace(addr->name||"???", ({"<", ">", "&"}), ({"&lt;", "&gt;", "&amp;"}));
         }
 	else
 	{
