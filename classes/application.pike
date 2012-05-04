@@ -32,7 +32,7 @@ void start_queue_processor()
 {
   int s = 5 + random(120);
   Log.info("Will process queue in " + s + " seconds.");
-  call_out(do_process_queue, s);
+  this->call_out(do_process_queue, s);
 }
 
 void do_process_queue()
@@ -42,7 +42,7 @@ void do_process_queue()
   Log.info("Finished processing queue.");  
   int s = 5 + (config["smtp"]->queue_interval||60)*10;
   Log.info("Will process queue in " + s + " seconds.");
-  call_out(do_process_queue, s);
+  this->call_out(do_process_queue, s);
 }
 
 void load_plugins()
@@ -227,16 +227,31 @@ int is_list_owner(SpeedyDelivery.Objects.List list, SpeedyDelivery.Objects.Subsc
 }
 
 
+object get_client()
+{
+werror("Thread: %O Handlers: %O\n",Thread.this_thread(),  master()->handlers_for_thread);
+  program clientp = master()->resolv("Mail.RobustClient");
+  if(!clientp)
+  {
+    werror("no client: %O\n", indices(Mail));
+    return 0;
+  }
+
+  Log.debug("have Mail.RobustClient.");
+  return clientp(config["smtp"]->smtp_host ||"localhost", config["smtp"]->smtp_port||25);
+
+}
+
 void process_queue()
 {
-  object client = master()->resolv("Mail.RobustClient")(config["smtp"]->smtp_host ||"localhost", config["smtp"]->smtp_port||25);
-Log.debug("have Mail.RobustClient.");
+  object client = get_client();
   client->process_queue((int)(config["smtp"]->queue_interval||60), (int)(config["smtp"]->queue_length||5760));
 }
 
 int|array send_message(string sender, array recipients, string message)
 {
-    return master()->resolv("Mail.RobustClient")(config["smtp"]->smtp_host, config["smtp"]->smtp_port||25)->send_message(
+    object client = get_client();
+    return client->send_message(
                    sender,
                    recipients, message);
 }

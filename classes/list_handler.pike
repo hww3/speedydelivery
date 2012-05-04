@@ -39,7 +39,8 @@ int handle_post(SpeedyDelivery.Request request)
 		"\n\nIt has been sent to the list owner for review.\n");
 
         SpeedyDelivery.Objects.Held_message()->new_for_list_action(request->list, "nonmember", request->sender->get_address(), request->mime);
-        catch(app->send_message_for_list(request->list, ({request->sender->get_address()}), (string)mime));
+        mixed e = catch(app->send_message_for_list(request->list, ({request->sender->get_address()}), (string)mime));
+        if(e) Log.exception("error occurred while sending rejection message.", e);
 
         return 250;
       }

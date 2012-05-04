@@ -21,7 +21,7 @@ mapping query_destination_callers()
 
 void start()
 {
-  call_out(schedule_process_digests, 5);
+  app->call_out(schedule_process_digests, 5);
 }
 
 void schedule_process_digests()
@@ -29,7 +29,7 @@ void schedule_process_digests()
   // TODO: make sure we only have one running at a time!
   mixed e = catch(process_digests());  
   if(e) Log.exception("An exception occurred while processing digests.\n", e);
-  call_out(schedule_process_digests, 3600*24);
+  app->call_out(schedule_process_digests, 3600*24);
 }
 
 // check to see if we have 20 emails ready to send; our default max digest 

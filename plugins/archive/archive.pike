@@ -38,7 +38,6 @@ int archive_message(string eventname, mapping event, mixed ... args)
    m["subject"] = event->mime->headers->subject;
    m["content"] = (string)event->mime;
    m->save();
-
    updateIndex(eventname, event, m);
 
    return SpeedyDelivery.ok;
@@ -46,7 +45,7 @@ int archive_message(string eventname, mapping event, mixed ... args)
 
 int updateIndex(string eventname, mapping event, object message)
 {
-  call_out(Thread.Thread, 0, doUpdateIndex, eventname, event, message);
+  app->create_thread(doUpdateIndex, eventname, event, message);
 
   return 0;
 }
@@ -65,7 +64,6 @@ void doUpdateIndex(string eventname, mapping event, object message)
     Log.debug("no full text url provided, skipping.");
     return;
   }
-
   string indexname = "SpeedyDelivery_" + event->request->list["name"];
   object c = FullText.UpdateClient(p["url"], indexname, p["auth"]);
 
@@ -81,9 +79,7 @@ void doUpdateIndex(string eventname, mapping event, object message)
     checked_exists = 1;
   }
 
-  int t;
-  t = time();
-  t = Calendar.dwim_time(event->request->mime->headers->date)->unix_time();
+  object t = Calendar.dwim_time(event->request->mime->headers->date);
 
   string content;
    content = Tools.String.textify(
