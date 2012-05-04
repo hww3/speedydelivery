@@ -89,7 +89,7 @@ void doUpdateIndex(string eventname, mapping event, object message)
   c->add(event->request->mime->headers->subject, 
       t, content,
       (string)message["id"],
-      Tools.String.make_excerpt(content), 0,      
+      Tools.String.make_excerpt(content),      
       "text/mime-message");
 }
 
