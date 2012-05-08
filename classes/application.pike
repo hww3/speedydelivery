@@ -229,11 +229,11 @@ int is_list_owner(SpeedyDelivery.Objects.List list, SpeedyDelivery.Objects.Subsc
 
 object get_client()
 {
-werror("Thread: %O Handlers: %O\n",Thread.this_thread(),  master()->handlers_for_thread);
+//werror("Thread: %O Handlers: %O\n",Thread.this_thread(),  master()->handlers_for_thread);
   program clientp = master()->resolv("Mail.RobustClient");
   if(!clientp)
   {
-    werror("no client: %O\n", indices(Mail));
+//    werror("no client: %O\n", indices(Mail));
     return 0;
   }
 
