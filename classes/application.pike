@@ -32,7 +32,7 @@ void start_queue_processor()
 {
   int s = 5 + random(120);
   Log.info("Will process queue in " + s + " seconds.");
-  this->call_out(do_process_queue, s);
+  call_out(do_process_queue, s);
 }
 
 void do_process_queue()
@@ -42,7 +42,7 @@ void do_process_queue()
   Log.info("Finished processing queue.");  
   int s = 5 + (config["smtp"]->queue_interval||60)*10;
   Log.info("Will process queue in " + s + " seconds.");
-  this->call_out(do_process_queue, s);
+  call_out(do_process_queue, s);
 }
 
 void load_plugins()
