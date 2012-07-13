@@ -37,7 +37,7 @@ void update(object id, object response, object view, mixed args)
     }
     else
     {
-      user["password"] = id->variables->reset_1;
+      user["password"] = Crypto.make_crypt_md5(id->variables->reset_1);
       response->flash("Your password was successfully changed.");
     }
   }
