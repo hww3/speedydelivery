@@ -1,5 +1,6 @@
 
 inherit Fins.DocController;
+inherit Fins.RootController;
 
 Fins.FinsController auth;
 
@@ -14,6 +15,11 @@ Fins.FinsController about;
 
 // used only for installing
 Fins.FinsController install;
+
+protected void create(object application)
+{
+  ::create(application);
+}
 
 void start()
 {
