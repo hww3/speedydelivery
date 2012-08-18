@@ -45,7 +45,7 @@ int archive_message(string eventname, mapping event, mixed ... args)
 
 int updateIndex(string eventname, mapping event, object message)
 {
-  app->create_thread(doUpdateIndex, eventname, event, message);
+  Thread.Thread(doUpdateIndex, eventname, event, message);
 
   return 0;
 }
