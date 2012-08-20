@@ -1,9 +1,10 @@
 <b>About <%$list.name%></b>
-<br/>
+<p>
 <%autoformat var="$list.description"%>
+</p>
 <hr/>
 <b>Using <%$list.name%> (<%$list.title%>)</b>
-<br/>
+<p>
 To post a message to all the list members, send email to 
 <a 
 href="mailto:<%human_email var="$list._addresses.__default"%>"><%human_email var="$list._addresses.__default"%></a>.
@@ -12,20 +13,23 @@ href="mailto:<%human_email var="$list._addresses.__default"%>"><%human_email var
 <i>Note: this list's policy prohibits non-subscribers from posting.</i>
 <%endif%>
 <p/>
+<p>
 You can subscribe to the list, or change your existing subscription, in 
 the sections below. 
+</p>
 <hr/>
 
 <%if data->user && data->subscription %>
 <b>Archives</b>
-<br/>
+<p>
 <%action_link controller="/archive" action="list" args="$list.name"%>View</a> this list's archives.
-<p/>
+</p>
+<hr/>
 <b>Delivery Settings</b>
-<br/>
+<p>
 You are subscribed to this list. You may modify the delivery settings for your
 subscription here.
-<p/>
+</p>
 <form action="<%action_url controller="/commands" action="setmode" args="$list.name"%>" method="post">
 Delivery mode:
 <input type="radio" name="mode" value="M" <%if data->subscription["mode"] == "M"%>checked="1"<%endif%>/>
@@ -40,11 +44,13 @@ No Mails
 <hr/>
 <%else%>
 <b>Subscribing to <%$list.name%></b>
-<br/>
+<p>
  Subscribe to <%$list.name%> by filling out the following form.
 <p/>
+<p>
 You will be sent email requesting confirmation, to prevent others 
 from gratuitously subscribing you.
+</p>
 <form action="<%action_url controller="/commands" action="subscribe" args="$list.name"%>" method="post">
 <table>
 <tr>
@@ -71,11 +77,13 @@ Email:
 
 <%endif%>
 <b>Unsubscribing from <%$list.name%></b>
-<br/>
+<p>
  Unsubscribe from <%$list.name%> by filling out the following form.
-<p/>
+</p>
+<p>
 You will be sent email requesting confirmation, to prevent others 
 from gratuitously unsubscribing you.
+</p>
 <form action="<%action_url controller="/commands" action="unsubscribe" args="$list.name"%>" method="post">
 <table>
 <tr>
@@ -92,7 +100,7 @@ Email:
 <% if data->user && data->list->is_owner(data->user) %>
 <hr/>
 <b>List Administration</b>
-<br/>
-  You're a list owner. Access the list's administration page <%action_link controller="/listadmin" action="display" args="$list.name"%>here</a>.
-  <p>
+<p>
+ You're a list owner. Access the list's administration page <%action_link controller="/listadmin" action="display" args="$list.name"%>here</a>.
+</p>
 <%endif %>

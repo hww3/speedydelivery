@@ -213,6 +213,7 @@ public void logout(Request id, Response response, Template.View t, mixed ... arg
   {
      id->misc->session_variables->logout = time();
      m_delete(id->misc->session_variables, "user");
+     id->misc->session_variables->user = 0;
   }
 
   response->flash("You have been successfully logged out.");
