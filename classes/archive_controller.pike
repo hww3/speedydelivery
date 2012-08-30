@@ -3,6 +3,7 @@ int __quiet = 1;
 
 void start()
 {
+ // we probably need to filter based on subscription, as well.
     around_filter(app->mandatory_user_filter);
 }
 
