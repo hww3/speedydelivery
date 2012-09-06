@@ -5,9 +5,9 @@ static void start()
   around_filter(app->user_filter);
 }
 
-void index(object id, object response, object view, mixed args)
+void index(object id, object response, object view, mixed ln)
 {
-  object list = Fins.DataSource._default.find.lists_by_alt(args[0]);
+  object list = Fins.DataSource._default.find.lists_by_alt(ln);
   view->add("list", list);
 
   object user = id->misc->session_variables->user;
