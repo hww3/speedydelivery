@@ -90,23 +90,12 @@ void new_from_address(Mail.MailAddress s)
     this["name"] = name;  
   this["email"] = address;
 
-  this["password"] = gen_password();
+  string newpass = Tools.String.generate_password(10);
+
+  this["password"] = Crypto.make_crypt_md5(newpass);
+
   save();
 
   context->app->trigger_event("createNewSubscriber", 
              (["subscriber": this]));
-}
-
-string gen_password()
-{
-  string q = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  string xx = "";
-
-  for(int x = 0; x < 10; x++)
-  {
-    int qq = random(25);
-    xx += q[qq..qq];
-  }
-
-  return xx;
 }
