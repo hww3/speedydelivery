@@ -7,7 +7,7 @@ void start()
     around_filter(app->mandatory_user_filter);
 }
 
-void list(object id, object response, object view, mixed args)
+void list(object id, object response, object view, mixed ... args)
 {
   if(!args || !sizeof(args))
   {
@@ -38,7 +38,7 @@ void list(object id, object response, object view, mixed args)
   view->add("date_groups", x);
 }
 
-void messages(object id, object response, object view, mixed args)
+void messages(object id, object response, object view, mixed ... args)
 {
   if(!args || !sizeof(args))
   {
@@ -80,11 +80,11 @@ void messages(object id, object response, object view, mixed args)
   view->add("messages", messages);
 }
 
-void index(object id, object response, object v, mixed args)
+void index(object id, object response, object v, mixed ... args)
 {
 }
 
-void search(object id, object response, object v, mixed args)
+void search(object id, object response, object v, mixed ... args)
 {
   mapping p = app->config["full_text"];
   if(!p)
@@ -138,7 +138,7 @@ void search(object id, object response, object v, mixed args)
 
 }
 
-void display(object id, object response, object v, mixed args)
+void display(object id, object response, object v, mixed ... args)
 {
   if(!args || !sizeof(args))
   {

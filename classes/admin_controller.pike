@@ -17,12 +17,12 @@ static void start()
   around_filter(app->mandatory_user_filter);
 }
 
-void display(object id, object response, object view, mixed args)
+void display(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN();
 }
 
-void displayholds(object id, object response, object view, mixed args)
+void displayholds(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN();
   view->add("holds", 
@@ -30,12 +30,12 @@ void displayholds(object id, object response, object view, mixed args)
   );
 }
 
-void displaysettings(object id, object response, object view, mixed args)
+void displaysettings(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN();
 }
 
-void displayhold(object id, object response, object view, mixed args)
+void displayhold(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN();
   int sid = (int)(id->variables->id);
@@ -52,12 +52,12 @@ void displayhold(object id, object response, object view, mixed args)
   );
 }
 
-void displaysubscriptions(object id, object response, object view, mixed args)
+void displaysubscriptions(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN();
 }
 
-void listusers(object id, object response, object view, mixed args)
+void listusers(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN_NOVIEW();
   String.Buffer d = String.Buffer();
@@ -69,7 +69,7 @@ void listusers(object id, object response, object view, mixed args)
   response->set_type("text/plain");
 }
 
-void updatemode(object id, object response, object view, mixed args)
+void updatemode(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN_NOVIEW();
   int sid = (int)(id->variables->id);
@@ -104,7 +104,7 @@ void updatemode(object id, object response, object view, mixed args)
   return;
 }
 
-void bulksubscribe(object id, object response, object view, mixed args)
+void bulksubscribe(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN_NOVIEW();
   int i;
@@ -142,7 +142,7 @@ void bulksubscribe(object id, object response, object view, mixed args)
   response->flash(i + " addresses subscribed successfully. " + fails);
 }
 
-void processhold(object id, object response, object view, mixed args)
+void processhold(object id, object response, object view, mixed ... args)
 {
   CHECKADMIN_NOVIEW();
   int sid = (int)(id->variables->id);
