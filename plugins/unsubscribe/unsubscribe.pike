@@ -40,6 +40,7 @@ int handle_unsubscribe(SpeedyDelivery.Request r)
   // (space)CONFIRM(space)list-name(space)confirmcode(whitespace)
   //  where confirmcode is a 25 character hex hash.
   string ln, hc;
+    Log.info("handling unsubscribe message from %O.", r->sender);
   if(sscanf(s, "%*s CONFIRM %s %25[0-9a-f]", ln, hc) == 3)
   {
     Log.info("have a correctly formed confirmation response.");
@@ -98,9 +99,9 @@ int confirm_unsubscription(SpeedyDelivery.Request r, string ln, string hc)
   if(!c) return 1;
   if(c["conftype"] != r->functionname) return 0;
   if(c["list"] != r->list["name"]) return 0;
-
   else
   {
+    Log.info("Unsubscribing %O from %O.", r->sender, r->list["name"]);
     r->list->unsubscribe(c);
     return 0;
   } 

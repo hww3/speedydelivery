@@ -97,5 +97,5 @@ void new_from_address(Mail.MailAddress s)
   save();
 
   context->app->trigger_event("createNewSubscriber", 
-             (["subscriber": this]));
+             (["subscriber": this, "password": newpass]));
 }

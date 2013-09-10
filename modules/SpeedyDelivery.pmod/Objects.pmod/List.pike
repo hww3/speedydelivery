@@ -128,7 +128,8 @@ Subscription subscribe_via_mailaddress(Mail.MailAddress m, int|void digest)
 int unsubscribe_via_mailaddress(Mail.MailAddress m)
 {
   Subscriber sx;
-  catch(sx = context->find->find->subscribers_by_alt(m->get_address()));   
+  catch(sx = context->find->subscribers_by_alt(m->get_address()));   
+  Log.info("Unsubscribing %O.", sx);
   if(!sx) 
   {
     return 0;
