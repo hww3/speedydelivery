@@ -59,6 +59,7 @@ int new_subscriber(string eventname, mapping event, mixed ... args)
   object v = app->view->get_string_view(msg);
 
   v->add("user", event->subscriber);
+  v->add("password", event->password);
 
   mime->setdata(v->render());
 
