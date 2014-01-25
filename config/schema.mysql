@@ -1,6 +1,6 @@
 CREATE TABLE lists (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
-  name CHAR(16) UNIQUE KEY,
+  name CHAR(36) UNIQUE KEY,
   options blob,
   title char(64),
   description blob,

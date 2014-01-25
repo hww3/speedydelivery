@@ -24,52 +24,22 @@ void new(object id, object response, object view, mixed args)
 void do_new(object id, object response, object view, mixed args)
 {
   CHECKADMIN();
+  object l;
+  mixed e = catch(l = SpeedyDelivery.new_list(id->variables->name, 
+       id->variables->owner_address, 
+       id->variables->description, 
+       id->variables->title));
 
-  object l, s;
-
-  // check to see if the list name is in use.
-  catch(l = Fins.DataSource._default.find.lists_by_alt(id->variables->name));
-
-  if(l)
-  { 
-    response->flash("List name '" + id->variables->name + "'"
-                      " is already in use.");
-    response->redirect(new);
-    return;
-  }  
-
-  //check to see if the email address is valid.
-  object addr = Mail.MailAddress(id->variables->owner_address);
-
-  if(!addr)
-  { 
-    response->flash("Email address '" + id->variables->owner_address + "'"
-                      " is invalid.");
+  if(e)
+  {
+    e = Error.mkerror(e);
+    response->flash(e->message());
     response->redirect(new);
     return;
   }
 
-  l = SpeedyDelivery.Objects.List();
-  l["name"] = id->variables->name;
-
-  // prepare the list owner.
-  catch(s = Fins.DataSource._default.find.subscribers_by_alt(addr->get_address()));
-
-  if(!s) 
-  {
-    s = SpeedyDelivery.Objects.Subscriber();
-    s->new_from_address(addr);
-  }  
-
-  l["description"] = id->variables->description;
-  l["title"] = id->variables->title;
-
-  l->save();
-
-  // we can't do this until we are saved. probably a fixme in fins.
-  l["list_owners"] += s;
-
-  s->subscribe(l);
+  foreach(l["list_owners"]; object owner)
+    owner->subscribe(l);
 
   response->flash("List " + id->variables->name + " created successfully.");
   response->redirect(app->controller);

@@ -52,4 +52,52 @@ string getfullbodymimetext(object mime, string|void mt, string|void s)
 }
 
 
+//!
+object new_list(string|void name, string owner_address, string description, string title)
+{
+  object l, s;
 
+  if(!name) name = (string)Standards.UUID.make_version1(time());
+
+  // check to see if the list name is in use.
+  catch(l = Fins.DataSource._default.find.lists_by_alt(name));
+
+  if(l)
+    throw(Error.Generic("List name '" + name + "' is already in use."));
+
+  //check to see if the email address is valid.
+  object addr = Mail.MailAddress(owner_address);
+
+  if(!addr)
+    throw(Error.Generic("Email address '" + owner_address + "' is invalid."));
+
+  l = SpeedyDelivery.Objects.List();
+  l["name"] = name;
+
+  s = failsafe_get_subscriber_object(addr);
+
+  l["description"] = description;
+  l["title"] = title;
+
+  l->save();
+
+  // we can't do this until we are saved. probably a fixme in fins.
+  l["list_owners"] += s;
+  
+  return l;
+}
+
+object failsafe_get_subscriber_object(object addr)
+{
+  object s;
+  // prepare the list owner.
+  catch(s = Fins.DataSource._default.find.subscribers_by_alt(addr->get_address()));
+
+  if(!s) 
+  {
+    s = SpeedyDelivery.Objects.Subscriber();
+    s->new_from_address(addr);
+  }  
+  
+  return s;
+}

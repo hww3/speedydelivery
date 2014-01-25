@@ -1,6 +1,6 @@
 create table lists (
    id integer primary key,
-   name char(16) not null unique,
+   name char(36) not null unique,
    title char(64),
    description blob,
    options blob,
