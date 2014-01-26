@@ -38,7 +38,7 @@ void do_new(object id, object response, object view, mixed args)
     return;
   }
 
-  foreach(l["list_owners"]; object owner)
+  foreach(l["list_owners"];; object owner)
     owner->subscribe(l);
 
   response->flash("List " + id->variables->name + " created successfully.");
