@@ -132,6 +132,7 @@ public void do_setup_smtp(Request id, Response response, mixed ... args)
   sv("smtp", "smtp_port", id->variables->outbound_port);
   sv("smtp", "listen_host", id->variables->inbound_host);
   sv("smtp", "listen_port", id->variables->inbound_port);
+  sv("processors", "class", "smtp_processor");
 
   response->redirect(setup_domains);
 }
