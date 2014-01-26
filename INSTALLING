@@ -1,0 +1,29 @@
+1. get fins using one of the following methods:
+
+   hg clone http://hg.welliver.org/fins
+   git clone https://github.com/hww3/fins
+
+2. set your FINS_HOME directory to the location of the cloned fins repo.
+
+3. in the speedydelivery directory, copy config/dev_sample.cfg to 
+   config/dev.cfg.
+
+4. edit dev.cfg as approprite (note that the smtp settings will be
+   configured using a web interface later.
+
+5. create the schema using the following command:
+
+   sqlite3 db/SpeedyDelivery_dev.sqlite3 < config/schema.sqlite
+
+6. start up speedydelivery:
+
+   bin/start.sh --no-virtual
+
+7. when speedydelivery starts up the first time, you'll need to configure
+   the smtp support. you can do this by going to the following url:
+
+   http://localhost:8080/
+
+8. enjoy!
+
+
