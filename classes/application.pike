@@ -11,9 +11,14 @@ mixed ds;
 
 void start()
 {	
-  ds = master()->resolv("Fins.DataSource._default");
+  ds = Fins.Model.get_context("_default");//master()->resolv("Fins.DataSource._default");
   load_default_destination_handler();
   load_plugins();
+  if(!config["processors"])   // || !config["processors"]["class"])
+  {
+    Log.warn("Note: SpeedyDelivery has not been configured for SMTP. Please visit the /install/ url to configure.");
+    return;
+  }
   start_queue_processor();
 }
 
