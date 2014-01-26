@@ -30,7 +30,10 @@ void start()
 //    view->default_template = Fins.Template.Simple;
     _index = install_index;
   }
-  else
+  else if(config["web"] && config["web"]["noui"])
+  {
+    _index = noui_index;
+  }
   {
     auth = load_controller("auth/controller");
 
@@ -53,6 +56,11 @@ function(object,object,object,mixed...:void) _index;
 void index(mixed ... args)
 {
 	_index(@args);
+}
+
+void noui_index(object id, object response, object view, mixed ... args)
+{
+  response->set_data("");
 }
 
 void real_index(object id, object response, object view, mixed ... args)
