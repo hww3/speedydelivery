@@ -1,6 +1,6 @@
 #!/bin/sh
-FINS_HOME=/opt/speedydelivery
-PATH=/usr/local/pike/7.8.352/bin:$PATH
+#FINS_HOME=/opt/speedydelivery
+PATH=$PATH
   PIKE_ARGS=""
 
   if [ x$FINS_HOME != "x" ]; then
@@ -10,4 +10,4 @@ PATH=/usr/local/pike/7.8.352/bin:$PATH
   fi
 
   cd `dirname $0`/../..
-  exec pike $PIKE_ARGS -x fins start SpeedyDelivery $*
+  exec pike $PIKE_ARGS -x fins start -a SpeedyDelivery $*
