@@ -25,9 +25,9 @@ int handle_post(SpeedyDelivery.Request request)
     {
        Log.debug("checking to see if the sender is a subscriber.");
        object s;
-       if(catch(s = Fins.DataSource._default.find.subscribers_by_alt(request->sender->get_address())) || 
-           !sizeof(Fins.Model.find.subscriptions(
-                (["Subscriber": Fins.DataSource._default.find.subscribers_by_alt(request->sender->get_address()),
+       if(catch(s = Fins.Model.get_context("_default")->find->subscribers_by_alt(request->sender->get_address())) || 
+           !sizeof(Fins.Model.get_context("_default")->find->subscriptions(
+                (["Subscriber": Fins.Model.get_context("_default")->find->subscribers_by_alt(request->sender->get_address()),
                  "List": request->list ]))))
       {
         Log.debug("sender isn't a subscriber. sending a failure message.");
@@ -55,9 +55,9 @@ void do_post(object request)
 {
    array fails;
  
-   if(app->trigger_event("preDelivery",
-             (["request": request, "mime": request->mime, "list": request->list]))
-      == SpeedyDelivery.abort) return;
+   int res = app->trigger_event("preDelivery",
+             (["request": request, "mime": request->mime, "list": request->list]));
+   if(res == SpeedyDelivery.abort) return 0;
 
     rewrite_message(request, request->mime);
 
@@ -65,7 +65,7 @@ mixed e;
     if(e = catch(
       fails = app->send_message_for_list(request->list, 
                                          
-Fins.DataSource._default.find.subscriptions((["List": request->list, 
+Fins.Model.get_context("_default")->find->subscriptions((["List": request->list, 
 "mode": "M"]))[*]["Subscriber"][*]["email"],
                                          (string)request->mime)
     )) 
@@ -87,9 +87,9 @@ Log.exception("error", e);
 
     if(app->trigger_event("postDelivery",
              (["request": request, "list": request->list, "mime": request->mime]))
-      == SpeedyDelivery.abort) return;
+      == SpeedyDelivery.abort) return 0;
 
-  return;
+  return 0;
 }
 
 void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
@@ -119,6 +119,6 @@ void rewrite_message(SpeedyDelivery.Request request, MIME.Message mime)
 
   if(request->list->trigger_event("rewriteMessage",
              (["request": request, "mime": mime]))
-      == SpeedyDelivery.abort) return;
+      == SpeedyDelivery.abort) return 0;
 }
 
