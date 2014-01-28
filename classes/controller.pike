@@ -34,6 +34,7 @@ void start()
   {
     _index = noui_index;
   }
+  else
   {
     auth = load_controller("auth/controller");
 
