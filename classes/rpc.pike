@@ -66,7 +66,14 @@ static int send_message_as_mime(string campaign_id, string sender, object mime, 
   return 1;
 }
 
-mapping campaign_status(object request, string campaign_id)
+mixed campaign_status(object request, string campaign_id)
 {
-  return ([]);
+  object list = app->ds->find->lists_by_alt(campaign_id);
+//  Fins.Model.get_context("_default")->find->subscriptions((["List": request->list, 
+//  "mode": "M"]))[*]["Subscriber"][*]["email"]
+  mixed subs = (list["Subscriptions"]["Subscriber"]);
+  array x = allocate(sizeof(subs));
+  foreach(subs;int i;mixed sub)
+    x[i] = (["email": sub["email"], "bounces": sub["bounces"]]);  
+  return x;
 }
