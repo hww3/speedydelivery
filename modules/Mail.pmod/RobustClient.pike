@@ -42,6 +42,7 @@ inherit Protocols.SMTP.Client;
     int rv;
     foreach(qi, object i) 
     {
+      Log.info("Attempting to send mail from %s to %s", i["envelope_from"], i["envelope_to"]);
 //      werror("qi: %O\n", (mapping)i);
       string from = i["envelope_from"];
       string to = i["envelope_to"];
