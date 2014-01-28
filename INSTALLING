@@ -24,6 +24,14 @@
 
    http://localhost:8080/
 
-8. enjoy!
+8. you'll need to configure your SMTP server to deliver mail bound for 
+   speedydelivery via smtp. if you've specified speedydelivery listen on port 
+   2025, and you chose the return address of "lists.mydomain.com", something
+   like the following would work for postfix (add this line to the transports
+   configuration file):
+   
+   lists.mydomain.com      smtp:speedydeliveryhost.mydomain.com:2025
+
+9. enjoy!
 
 
