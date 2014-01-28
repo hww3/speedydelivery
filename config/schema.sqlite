@@ -28,6 +28,7 @@ CREATE TABLE subscribers (
   name varchar(320),
   is_admin int(1),
   password varchar(48),
+  options blob,
   bounces integer,
   created datetime NOT NULL default CURRENT_TIMESTAMP
 );

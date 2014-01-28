@@ -2,6 +2,8 @@ import Tools.Logging;
 
 inherit Protocols.SMTP.Client;
 
+  function failure_callback;
+  
   static int cmd(string c, string|void comment)
   {
     int r = command(c);
@@ -20,24 +22,27 @@ inherit Protocols.SMTP.Client;
   void process_queue(int queue_interval, int queue_length)
   {
     array qi;
-    Fins.DataSource._default.find.outbound_messages((["in_progress": 0, "queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_interval*60) )]));
-    process_queue_items(qi||({}));
-    Fins.DataSource._default.find.outbound_messages((["queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_length*60) ) ]))->delete();
+  //  qi = Fins.DataSource._default.find.outbound_messages((["in_progress": 0]));
+    qi = Fins.DataSource._default.find.outbound_messages((["in_progress": 0, "queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_interval*60) )]));
+    process_queue_items(qi||({}), queue_length);
+//    Fins.DataSource._default.find.outbound_messages((["queued": Fins.Model.OperatorCriteria("<", Calendar.now()->second() - (queue_length*60) ) ]))->delete();
   }
 
   int|array(string) send_message(string from, array(string) to, string body)
   {
     array qi = create_queue_items(from, to, body);
-    return process_queue_items(qi);
+    call_out(process_queue_items, 0, qi);
+    return 0;
   }
 
-  int|array(string) process_queue_items(array qi)
+  int|array(string) process_queue_items(array qi, int|void queue_length)
   {
+    if(!queue_length) queue_length = 72*60;
     array failures = ({});
     int rv;
-
     foreach(qi, object i) 
     {
+//      werror("qi: %O\n", (mapping)i);
       string from = i["envelope_from"];
       string to = i["envelope_to"];
       string body = i["content"];
@@ -46,8 +51,19 @@ inherit Protocols.SMTP.Client;
 
     if(rv > 400 && rv < 499) // temporary failure, retry later.
     {
-        i->set_atomic((["last_attempt": Calendar.now()->second(),
+      if(i["queued"]->distance(Calendar.now())->number_of_minutes() > queue_length)
+      {
+        failures += ({i["envelope_to"]});
+        if(failure_callback)
+          failure_callback(i);
+        
+        i->failed();
+      } 
+      else
+      {
+          i->set_atomic((["last_attempt": Calendar.now()->second(),
                       "in_progress":  0 ]));
+      }
         continue;
     }
 
@@ -57,13 +73,26 @@ inherit Protocols.SMTP.Client;
       {
         failures += ({ i["envelope_to"] });
         qi -= ({i});
-        i->delete();
+        if(failure_callback)
+          failure_callback(i);
+        i->failed();
         continue;
       }
       else if(rv >= 400 && rv <= 499) // temporary failure
       {
-        i->set_atomic((["last_attempt": Calendar.now()->second(),
+        if(i["queued"]->distance(Calendar.now())->number_of_minutes() > queue_length)
+        {
+          failures += ({i["envelope_to"]});
+          if(failure_callback)
+            failure_callback(i);
+          i->failed();
+        } 
+        else
+        {
+        
+          i->set_atomic((["last_attempt": Calendar.now()->second(),
                       "in_progress":  0 ]));
+        }
         qi -= ({i});
         continue;
       }
@@ -76,13 +105,27 @@ inherit Protocols.SMTP.Client;
     Log.debug("got " + rv + " on DATA");
     if(rv >= 500) // permanent failure
     {
-      failures += i["envelope_to"];
-      i->delete();
+      failures += ({i["envelope_to"]});
+      if(failure_callback)
+        failure_callback(i);
+      
+      i->failed();
     }
     else if(rv >= 400 && rv <= 499) // temporary failure
-    {     
-      i->set_atomic((["last_attempt": Calendar.now()->second(),
+    { 
+      if(i["queued"]->distance(Calendar.now())->number_of_minutes() > queue_length)
+      {
+        failures += ({i["envelope_to"]});
+        if(failure_callback)
+          failure_callback(i);
+        
+        i->failed();
+      } 
+      else
+      {    
+        i->set_atomic((["last_attempt": Calendar.now()->second(),
                       "in_progress":  0 ]));
+      } 
     }
 
     // Perform quoting according to RFC 2821 4.5.2.
@@ -103,18 +146,35 @@ inherit Protocols.SMTP.Client;
     Log.debug("got " + rv + " on DATA BODY");
     if(rv >= 500) // permanent failure
     {
-      failures += i["envelope_to"];
-      i->delete();
+      failures += ({i["envelope_to"]});
+      if(failure_callback)
+        failure_callback(i);
+      
+      i->failed();
     }
     else if(rv >= 400 && rv <= 499) // temporary failure
-    {     
-      i->set_atomic((["last_attempt": Calendar.now()->second(),
+    { 
+      // if queued longer than 72 hours, we should abort and mark as a failure.
+      // nb: this should probably be a configurable timeout.
+      
+      if(i["queued"]->distance(Calendar.now())->number_of_minutes() > queue_length)
+      {
+        failures += ({i["envelope_to"]});
+        if(failure_callback)
+          failure_callback(i);
+        
+        i->failed();
+      } 
+      else
+      {
+        i->set_atomic((["last_attempt": Calendar.now()->second(),
                       "in_progress":  0 ]));
+      }
     }
     else // success!
     { 
+      Log.info("successfully sent message to %s.\n", i["envelope_to"]);
       i->delete();
-      werror("successfully sent message.\n");
     }
 
   }

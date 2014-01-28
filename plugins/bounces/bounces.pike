@@ -41,31 +41,33 @@ mapping query_destination_callers()
 int handle_bounce(SpeedyDelivery.Request r)
 {
   Log.info("the following bounce was received: %O", r->mime->headers);
-  string bouncer;
   array bouncers;
   int handled;
 
   if(is_bounce(r))
   {
-    bouncer = extract_bouncer(r);
+    bouncers = ({ extract_bouncer(r) });
   }
   else if(is_dsn(r))
   {
     bouncers = extract_bouncer_from_dsn(r);
 //    werror("bouncers: %O\n", bouncers);
-    bouncers = Fins.Model.find.subscribers((["email": Fins.Model.InCriteria(bouncers)]));
-    werror("bouncers: %O\n", bouncers);
+  }
+  
+  // we shouldn't reuse this array, really.
+  bouncers = Fins.Model.find.subscribers((["email": Fins.Model.InCriteria(bouncers)]));
+  werror("bouncers: %O\n", bouncers);
     // if we have more than hit, it's probably ambiguous.
-    if(sizeof(bouncers) == 1)
-    {
-      bouncers->has_bounced(r->list);
-      handled++;
-    }
+    
+  if(sizeof(bouncers) == 1)
+  {
+    bouncers->has_bounced(r->list);
+    handled++;
   }
 
   if(!handled)
   {
-//  else // misdirected messages should go to the list owner.
+     //  else // misdirected messages should go to the list owner.
     string subject = "Unhandled bounce message for " + r->list["name"];
     string message = "A message was sent to this list's bounce address,\n "
                            "however we weren't able to identify it as a bounce. \n"
@@ -75,7 +77,6 @@ int handle_bounce(SpeedyDelivery.Request r)
     app->send_message_as_attachment_to_list_owner(r->list, subject, message, r->mime);
   }
 
-//  Stdio.write_file("/tmp/spdbounce.txt", (string)r->mime);
   return 0;
 }
 

@@ -7,6 +7,9 @@ mapping event_handlers = ([]);
 mapping destination_handlers = ([]);
 mapping valid_addresses = ([]);
 
+string list_handler_prog = "list_handler";
+mixed queue_processor_callout_id;
+
 mixed ds;
 
 void start()
@@ -27,7 +30,7 @@ void start()
 // this code is located in list_handler.pike.
 void load_default_destination_handler()
 {
-  program lhp = (program)"list_handler";
+  program lhp = (program)list_handler_prog;
 
   object lho = lhp(this);
   destination_handlers->__default = lho->handle_post;
@@ -43,11 +46,12 @@ void start_queue_processor()
 void do_process_queue()
 {
   Log.info("Processing queue.");
+  remove_call_out(queue_processor_callout_id);
   process_queue();
   Log.info("Finished processing queue.");  
-  int s = 5 + (config["smtp"]->queue_interval||60)*10;
+  int s = 5 + (int)(config["smtp"]->queue_interval||60)*60;
   Log.info("Will process queue in " + s + " seconds.");
-  call_out(do_process_queue, s);
+  queue_processor_callout_id = call_out(do_process_queue, s);
 }
 
 void load_plugins()
@@ -243,8 +247,41 @@ object get_client()
   }
 
   Log.debug("have Mail.RobustClient.");
-  return clientp(config["smtp"]->smtp_host ||"localhost", config["smtp"]->smtp_port||25);
+  
+  object c = clientp(config["smtp"]->smtp_host ||"localhost", config["smtp"]->smtp_port||25);
 
+  c->failure_callback = handle_smtp_queue_failure;
+  return c;
+}
+
+// callback used by SMTP RobustClient
+void handle_smtp_queue_failure(object /* Outgoing_message */ queue_item)
+{
+  record_bounce_for_subscriber(queue_item["envelope_to"], queue_item["envelope_from"]);
+}
+
+void record_bounce_for_subscriber(string subscriber, string from)
+{
+    object s = SpeedyDelivery.get_subscriber_object(Mail.MailAddress(subscriber));
+    if(!s)
+    {
+      Log.warn("received bounce from non-subscriber email: %s", (string)subscriber);      
+    } 
+    else
+    {
+      mixed q = is_valid_address(Mail.MailAddress(from));
+      if(q)
+      {
+        object list;
+        catch(list = ds->find->lists_by_alt(q[0]));
+   //     werror("list: %O\n", list);
+        if(list)
+          s->has_bounced(list);
+  //      werror("q: %O\n", q);
+        
+  //    werror("bounces: %O\n", s["bounces"]);
+    }
+    }
 }
 
 void process_queue()
@@ -392,6 +429,7 @@ mixed is_valid_address(Mail.MailAddress a)
   if(sizeof(x) > 1) // okay, we have a -, we need to figure if it's
                     // part of the list name, or an admin function.
   {
+    werror("handlers: %O, %O\n", destination_handlers, x);
     if(destination_handlers[x[-1]])
     {
        functionname = x[-1];
@@ -403,7 +441,7 @@ mixed is_valid_address(Mail.MailAddress a)
 
   if(catch(l = ds->find->lists_by_alt(x*"-")))
   {
-    Log.info("%s is not a valid list identifier.", a->localpart);
+    Log.info("%s is not a valid list identifier.", x*"-");
     return 0;
   }
 

@@ -4,3 +4,8 @@ inherit Fins.Model.DirectAccessInstance;
 
 string type_name = "Outbound_message";
 
+void failed()
+{
+  werror("send failed for %s\n", this["envelope_to"]);
+  delete();
+}

@@ -1,3 +1,4 @@
+inherit Fins.XMLRPCController;
 
 //! @param campaign_id
 //!  optional identifier for campaign, must be unique. if not provided, a unique uuid will be used.
@@ -14,30 +15,58 @@
 //! @param subscribers
 //!   array containing a list of subscribers and subscriber data.
 //!   required fields include:
-//!        
-string create_campaign(string|void campaign_id, string owner_email, mapping options, 
+//!        name
+//!        address (email)
+string create_campaign(object request, string|void campaign_id, string owner_email, mapping options, 
   array(mapping) subscribers)
 { 
+  mixed err = catch{
+    
   object l = SpeedyDelivery.new_list(0, owner_email, options->description, options->title);
-  object addr = Mail.MailAddress(owner_address);
-  
-  object s = failsafe_get_subscriber_object(addr);
-  s->subscribe(l, 1 /* quiet! */);
+  object addr = Mail.MailAddress(owner_email);
   
   foreach(subscribers;; mapping subscriber)
   {
-    
+    object s = SpeedyDelivery.failsafe_get_subscriber_object(Mail.MailAddress(subscriber["address"]));
+    s["name"] = subscriber["name"];
+    s->subscribe(l, 1 /* quiet! */);
+    s["_options"]->data = subscriber;
   }
   
   return l["name"];
+  };
+  
+  if(err) werror("error: %s\n", master()->describe_backtrace(err));
+  
+  return 0;
+  
 }
 
-int send_message(string campaign_id, string template, mapping options)
-{
+//! @param sender
+//!   a valid rfc compliant email address.
+//! @param template
+//!   a valid MIME formatted message
+int send_message(object request, string campaign_id, string sender, string template, mapping options)
+{  
+  
+  mixed err = catch{
+    object m = MIME.Message(template);
+    m->headers->from = sender;
+    return send_message_as_mime(campaign_id, sender, m, options);
+  };
+  
+  if(err) werror("error: %s\n", master()->describe_backtrace(err));
   return 1;
 }
 
-mapping campaign_status(string campaign_id)
+static int send_message_as_mime(string campaign_id, string sender, object mime, mapping options)
+{
+  object rq = SpeedyDelivery.Request(app, mime, sender, campaign_id + "@" + app->getmyhostname());
+  app->distribute_message(rq);
+  return 1;
+}
+
+mapping campaign_status(object request, string campaign_id)
 {
   return ([]);
 }

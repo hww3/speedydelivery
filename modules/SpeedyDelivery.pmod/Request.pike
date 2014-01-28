@@ -29,7 +29,7 @@ void populate_fields()
 {
   array x = fins_app->is_valid_address(recipient);
 
-  werror("x: %O\n", x);
+ // werror("x: %O\n", x);
 
   list = Fins.Model.get_context("_default")->find->lists_by_alt(x[0]);
   list_address = sprintf("%s@%s", list["name"], fins_app->getmyhostname());

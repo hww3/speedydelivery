@@ -88,6 +88,16 @@ object new_list(string|void name, string owner_address, string description, stri
   return l;
 }
 
+//! may return null if subscriber email is not recognized.
+object get_subscriber_object(object addr)
+{
+  object s;
+  // prepare the list owner.
+  catch(s = Fins.Model.get_context("_default")->find->subscribers_by_alt(addr->get_address()));
+
+  return s;
+}
+
 object failsafe_get_subscriber_object(object addr)
 {
   object s;

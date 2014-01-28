@@ -12,6 +12,7 @@ Fins.FinsController account;
 Fins.FinsController mylists;
 Fins.FinsController archive;
 Fins.FinsController about;
+Fins.FinsController rpc;
 
 // used only for installing
 Fins.FinsController install;
@@ -50,6 +51,8 @@ void start()
     around_filter(app->user_filter);
     _index = real_index;
   }
+  
+  rpc = load_controller("rpc");
 }
 
 function(object,object,object,mixed...:void) _index;

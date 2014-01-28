@@ -5,6 +5,7 @@ inherit Fins.Model.DataObject;
 void post_define(object context)
 {
 // Add any post configuration logic here
+  add_field(context, Fins.Model.MetaDataField("_options", "options"));
   has_many_to_many(context, "lists_owners", "List", "list_owner", "owned_list");
 }
 
