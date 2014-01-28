@@ -59,8 +59,16 @@ void do_post(object request)
 
 MIME.Message tailor_message(MIME.Message message, mapping data)
 {
+  // since we want to make destructive changes to the mail message, 
+  // we must clone it. sad that there isn't a better way to clone a Message...
   object m = MIME.Message((string)message);
   m->headers->to = (string)data->recipient["email"];
+  
+  // we could also take the opportunity to do variable substitution, etc.
+  // perhaps using public_template_mustache?
+  
+  // object mt = Public.Template.Mustache();
+  // m = MIME.Message(mt->to_html((string)message), data);
   return m;
 }
 
