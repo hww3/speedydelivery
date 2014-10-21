@@ -53,7 +53,7 @@ string getfullbodymimetext(object mime, string|void mt, string|void s)
 
 
 //!
-object new_list(string|void name, string owner_address, string description, string title)
+object new_list(string name, string owner_address, string description, string title, string|void return_host)
 {
   
   object l, s;
@@ -79,7 +79,8 @@ object new_list(string|void name, string owner_address, string description, stri
 
   l["description"] = description;
   l["title"] = title;
-
+  if(return_host && strlen(return_host))
+    l["return_host"] = return_host;
   l->save();
 
   // we can't do this until we are saved. probably a fixme in fins.

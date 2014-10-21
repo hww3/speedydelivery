@@ -313,7 +313,7 @@ int|array send_message_to_list_owner(SpeedyDelivery.Objects.List list, string me
 string getmyhostname(void|object list)
 {
   if(list && list["return_host"])
-    return list["return_host"]  
+    return list["return_host"];  
   else
     return config["smtp"]["return_host"] || gethostname();
 }

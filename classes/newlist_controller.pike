@@ -1,4 +1,5 @@
 inherit Fins.DocController;
+import Tools.Logging;
 
 int __quiet=1;
 
@@ -28,11 +29,12 @@ void do_new(object id, object response, object view, mixed args)
   mixed e = catch(l = SpeedyDelivery.new_list(id->variables->name, 
        id->variables->owner_address, 
        id->variables->description, 
-       id->variables->title));
+       id->variables->title, id->variables->return_host));
 
   if(e)
   {
     e = Error.mkerror(e);
+    Log.exception("Error creating list.", e);
     response->flash(e->message());
     response->redirect(new);
     return;
