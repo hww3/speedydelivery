@@ -310,9 +310,12 @@ int|array send_message_to_list_owner(SpeedyDelivery.Objects.List list, string me
                    get_owner_addresses(list), message);
 }
 
-string getmyhostname()
+string getmyhostname(void|object list)
 {
-  return config["smtp"]["return_host"] || gethostname();
+  if(list && list["return_host"])
+    return list["return_host"]  
+  else
+    return config["smtp"]["return_host"] || gethostname();
 }
 
 string get_install_address()
@@ -334,7 +337,7 @@ string get_address_for_function(SpeedyDelivery.Objects.List list, string func)
 {
   if(func == "__default") func = 0;
 
-  return list["name"] + (func?("-" + func):"") + "@" + getmyhostname();
+  return list["name"] + (func?("-" + func):"") + "@" + getmyhostname(list);
 }
 
 string get_listmaster_address()

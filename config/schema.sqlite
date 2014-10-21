@@ -1,6 +1,7 @@
 create table lists (
    id integer primary key,
    name char(36) not null unique,
+   return_host char(64),
    title char(64),
    description blob,
    options blob,
