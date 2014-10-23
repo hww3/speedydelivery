@@ -1,0 +1,13 @@
+You were unable to be unsubscribed from the following list because you
+do not have an active subscription:
+
+ <%$list.name%>
+
+You may access your SpeedyDelivery account and change your password or
+subscription settings by visiting this url:
+
+<%speedydelivery_url%>
+
+The mail address associated with your unsubscription request is:
+
+<%$address%>

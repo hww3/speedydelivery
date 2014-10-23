@@ -262,13 +262,22 @@ int generate_invalid_unsubscription(Mail.MailAddress a)
 {
   // TODO: actually do it
   Log.info("generating invalid unsubscription notice.");
+
+  object mime = MIME.Message();
+  mime->headers["subject"] = "Not subscribed to " + this["name"];
+  mime->headers["to"] = sender->get_address();
+  mime->headers["from"] = context->app->get_address_for_function(this, "unsubscribe");
+
+  string msg = this["_options"]["invalid_subscription"] ||
+#string "../../../plugins/subscribe/notsubscribed.txt";
+
+  object v = context->app->view->get_string_view(msg);
+
+  v->add("address", sender->get_address());
+  v->add("list", this);
+
+  mime->setdata(v->render());
+  context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
+
   return 260;
 }
-
-int generate_duplicate_unsubscription(Mail.MailAddress a)
-{
-  // TODO: actually do it
-  Log.info("generating duplicate unsubscription notice.");
-  return 260;
-}
-
