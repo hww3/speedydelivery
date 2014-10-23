@@ -7,3 +7,7 @@ You may access your SpeedyDelivery account and change your password or
 subscription settings by visiting this url:
 
 <%speedydelivery_url%>
+
+The mail address associated with the existing subscription is:
+
+<%$address%>

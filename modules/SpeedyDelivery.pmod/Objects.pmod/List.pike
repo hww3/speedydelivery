@@ -234,13 +234,13 @@ int generate_subscription_confirmation(Mail.MailAddress sender, int|void digest)
   return 250;
 }
 
-int generate_duplicate_subscription(Mail.MailAddress a)
+int generate_duplicate_subscription(Mail.MailAddress sender)
 {
   // TODO: actually do it
   Log.info("generating duplicate subscription notice.");
 
   object mime = MIME.Message();
-  mime->headers["subject"] = "Already Subscribed to" + this["name"];
+  mime->headers["subject"] = "Already Subscribed to " + this["name"];
   mime->headers["to"] = sender->get_address();
   mime->headers["from"] = context->app->get_address_for_function(this, "subscribe");
 
@@ -249,6 +249,7 @@ int generate_duplicate_subscription(Mail.MailAddress a)
 
   object v = context->app->view->get_string_view(msg);
 
+  v->add("address", sender->get_address());
   v->add("list", this);
 
   mime->setdata(v->render());
