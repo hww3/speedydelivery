@@ -40,7 +40,7 @@ int handle_subscribe(SpeedyDelivery.Request r)
   if(search(sa, "subscribe") == -1) // we don't have the magic word!
   {
     Log.info("sending help to wandering subscriber.");
-    return app->generate_help(r);
+    return app->generate_help(r, "subscribe");
   }
 
   return r->list->request_subscription(r->sender);

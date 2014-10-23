@@ -362,8 +362,26 @@ int send_message_as_attachment_to_list_owner(SpeedyDelivery.Objects.List list, s
 }
 
 
-int generate_help(SpeedyDelivery.Request r)
+int generate_help(SpeedyDelivery.Request r, string method)
 {
+  object sender = r->sender;
+  object list = r->list;
+  object mime = MIME.Message();
+  mime->headers["subject"] = "SpeedyDelivery help for list " + list["name"];
+  mime->headers["to"] = sender->get_address();
+  mime->headers["from"] = get_address_for_function(list, method);
+  
+  string msg = list["_options"]["help_message"] ||
+#string "../config/help.txt";
+  
+  object v = view->get_string_view(msg);
+  
+  v->add("address", sender->get_address());   
+  v->add("list", list);
+  
+  mime->setdata(v->render());
+  send_message_for_list(list, ({sender->get_address()}), (string)mime);
+
   return 250;
 }
 

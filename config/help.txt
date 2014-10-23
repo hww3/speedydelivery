@@ -1,0 +1,22 @@
+SpeedyDelivery Help
+===================
+
+We received a request for help or an unknown command at the following
+mailing list:
+
+  <%$list.name%>
+
+To subscribe, send an email with the word "subscribe" in the message
+body to the following address:
+
+  <%$list._addresses.subscribe%>
+
+To unsubscribe, send an email with the word "unsubscribe" in the message
+body to the following address:
+
+  <%$list._addresses.unsubscribe%>
+
+You may access your SpeedyDelivery account and change your password or
+subscription settings by visiting this url:
+
+  <%speedydelivery_url%>

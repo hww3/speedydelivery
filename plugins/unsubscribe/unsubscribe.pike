@@ -51,7 +51,7 @@ int handle_unsubscribe(SpeedyDelivery.Request r)
   if(search(lower_case(Tools.String.textify(s)), "unsubscribe") == -1) // we don't have the magic word!
   {
     Log.info("sending help to wandering unsubscriber.");
-    return app->generate_help(r);
+    return app->generate_help(r, "unsubscribe");
   }
 
   return r->list->request_unsubscription(r->sender);

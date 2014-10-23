@@ -258,7 +258,7 @@ int generate_duplicate_subscription(Mail.MailAddress sender)
   return 260;
 }
 
-int generate_invalid_unsubscription(Mail.MailAddress a)
+int generate_invalid_unsubscription(Mail.MailAddress sender)
 {
   // TODO: actually do it
   Log.info("generating invalid unsubscription notice.");
