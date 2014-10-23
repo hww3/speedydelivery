@@ -238,6 +238,22 @@ int generate_duplicate_subscription(Mail.MailAddress a)
 {
   // TODO: actually do it
   Log.info("generating duplicate subscription notice.");
+
+  object mime = MIME.Message();
+  mime->headers["subject"] = "Already Subscribed to" + this["name"];
+  mime->headers["to"] = sender->get_address();
+  mime->headers["from"] = context->app->get_address_for_function(this, "subscribe");
+
+  string msg = this["_options"]["duplicate_message"] ||
+#string "../../../plugins/subscribe/duplicate.txt";
+
+  object v = context->app->view->get_string_view(msg);
+
+  v->add("list", this);
+
+  mime->setdata(v->render());
+  context->app->send_message_for_list(this, ({sender->get_address()}), (string)mime);
+
   return 260;
 }
 
