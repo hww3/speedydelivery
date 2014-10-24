@@ -11,11 +11,20 @@ void new_for_list_action(object list, string action, string sender, object mime)
   v->envelope_from = sender;
   v->subject = mime->headers->subject || "[NO SUBJECT]";
   v->holdtype = action;
+  v->holdid = gen_holdid();
   v->content = (string)mime;
 //  v->added = Calendar.now();
   this->set_atomic(v);
+
+  context->app->trigger_event("holdMessage",
+             (["mime": mime, "list": list, "hold": this]));
 }
 
+string gen_holdid()
+{
+  return sprintf("%{%01x%}",
+    (array)Crypto.Random.random_string(25))[0..24];
+}
 void release()
 {
   object app = context->app;

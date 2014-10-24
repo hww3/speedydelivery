@@ -1,0 +1,14 @@
+A message has arrived for the following list from a user not authorized 
+to post:
+
+ <%$list.name%>
+
+The email address of the user is: <%$hold.envelope_from%>.
+The subject of the message is: "<%$hold.subject%>".
+
+Your action is requested to release this message to the list, or reject and 
+delete it. You may do this by replying to this message, ensuring that only 
+one of the following lines is included intact:
+
+RELEASE <%$list.name%> <%$hold.holdid%> 
+REJECT <%$list.name%> <%$hold.holdid%> 
