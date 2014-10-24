@@ -62,6 +62,7 @@ CREATE TABLE held_messages
   envelope_from varchar(320) not null,
   subject varchar(120),
   holdtype char(12) not null,
+  holdid char(25) not null,
   content blob,
   added timestamp default CURRENT_TIMESTAMP
 );
