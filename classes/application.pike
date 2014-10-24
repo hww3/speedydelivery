@@ -165,7 +165,7 @@ void add_event_handler(string event, function handler)
 int trigger_event(string event, mixed ... args)
 {
   int retval;
-  Log.debug("Calling event " + event);
+  Log.info("Calling event " + event);
   if(event_handlers[event])
   {
     foreach(event_handlers[event];; function h)

@@ -8,7 +8,10 @@ static void create(string|void index_url, string|void index_name, string auth, i
   ::create(index_url, index_name, auth);
   int e = exists(name);
   if(!e && create_if_new)
+  {
+ werror ("creating index.\n");
     new(name);
+  }
   else if(!e)
     throw(Error.Generic("UpdateClient(): index " + name + " does not exist.\n"));
 }

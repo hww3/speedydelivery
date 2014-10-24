@@ -5,7 +5,7 @@ constant name = "archive support";
 constant description = "support for archived article storage";
 
 int _enabled = 1;
-int checked_exists = 0;
+mapping checked_exists = ([]);
 
 mapping query_event_callers()
 {
@@ -19,6 +19,7 @@ mapping query_destination_callers()
 
 int archive_message(string eventname, mapping event, mixed ... args)
 {
+Log.info("archiving message");
    SpeedyDelivery.Objects.Archived_message m;
    m = SpeedyDelivery.Objects.Archived_message();
    m["List"] = event->request->list;
@@ -52,33 +53,27 @@ int updateIndex(string eventname, mapping event, object message)
 
 void doUpdateIndex(string eventname, mapping event, object message)
 {
+Log.info("doUpdateIndex");
   mapping p = app->config["full_text"];
   if(!p)
   {
-     Log.debug("no full text configuration, skipping.");
+     Log.info("no full text configuration, skipping.");
      return;
   }
 
   if(!p["url"])
   {
-    Log.debug("no full text url provided, skipping.");
+    Log.info("no full text url provided, skipping.");
     return;
   }
+Log.info("getting client: %O, %O.", event, p);
   string indexname = "SpeedyDelivery_" + event->request->list["name"];
-  object c = FullText.UpdateClient(p["url"], indexname, p["auth"]);
+Log.info("index name: %O", indexname);
+  object c;
+object e = catch(c = FullText.UpdateClient(p["url"], indexname, p["auth"], 1));
+Log.info("got client: %O.", e);
 
-
-  if(!checked_exists)
-  {
-    int e = c->exists(indexname);
-    if(!e)
-    {
-      Log.info("creating new full text index " + indexname + " on " + p["url"] + ".");
-      c->new(indexname);
-    }
-    checked_exists = 1;
-  }
-
+Log.info("index ready.");
   object t = Calendar.dwim_time(event->request->mime->headers->date);
 
   string content;
