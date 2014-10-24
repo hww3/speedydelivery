@@ -19,23 +19,23 @@ mapping query_destination_callers()
 
 int hold_message(string eventname, mapping event, mixed ... args)
 {
-  Log.info("generating hold message for %s\n", this["name"]);
+  Log.info("generating hold message for %s\n", event->list["name"]);
 
   object mime = MIME.Message();
   mime->headers["subject"] = "Moderation request from " + event->hold["envelope_from"]  + " to " + event->list["name"];
-  mime->headers["from"] = context->app->get_address_for_function(this, "moderate");
-  mime->headers["to"] = app->get_list_owners;
+  mime->headers["from"] = app->get_address_for_function(event->list, "moderate");
+  mime->headers["to"] = app->get_owner_addresses(event->list);
 
-  string msg = this["_options"]["moderate_message"] ||
-#string "../../../plugins/moderate/moderate.txt";
+  string msg = event->list["_options"]["moderate_message"] ||
+#string "moderate.txt";
 
-  object v = context->app->view->get_string_view(msg);
+  object v = app->view->get_string_view(msg);
 
-  v->add("list", this);
+  v->add("list", event->list);
   v->add("hold", event->hold);
 
   mime->setdata(v->render());
-  app->send_message_to_list_owner(this, (string)mime);
+  app->send_message_to_list_owner(event->list, (string)mime);
 
   return SpeedyDelivery.ok;
 }
@@ -75,8 +75,9 @@ int release_message(SpeedyDelivery.Request r, string ln, string hc)
   c = [object(SpeedyDelivery.Objects.Held_message)]x;
 
   if(!c) return 1;
+Log.info("=> found held message.");
 //  if(c["conftype"] != r->functionname) return 0;
-  if(c["list"] != r->list["name"]) return 0;
+  if(c["List"]["name"] != r->list["name"]) return 0;
   else
   {
     Log.info("=> releasing id %s for list %s.", hc, ln);
@@ -97,7 +98,7 @@ int reject_message(SpeedyDelivery.Request r, string ln, string hc)
 
   if(!c) return 1;
 //  if(c["conftype"] != r->functionname) return 0;
-  if(c["list"] != r->list["name"]) return 0;
+  if(c["List"]["name"] != r->list["name"]) return 0;
   else
   {
     Log.info("=> rejecting id %s for list %s.", hc, ln);
