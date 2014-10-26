@@ -82,6 +82,24 @@ Log.info("=> found held message.");
   {
     Log.info("=> releasing id %s for list %s.", hc, ln);
     c->release();
+    
+    object mime = MIME.Message();
+    mime->headers["subject"] = "Moderation result for " + r->list["name"];
+    mime->headers["from"] = app->get_address_for_function(r->list, "moderate");
+    mime->headers["to"] = (string)r->sender;
+
+    string msg = r->list["_options"]["moderate_response"] ||
+#string "response.txt";
+
+    object v = app->view->get_string_view(msg);
+
+    v->add("list", r->list);
+    v->add("holdid", hc);
+    v->add("request", "release");
+
+    mime->setdata(v->render());
+
+    app->send_message(mime->headers["from"], (string)r->sender, (string)mime);
     return 0;
   }
 }
@@ -102,7 +120,27 @@ int reject_message(SpeedyDelivery.Request r, string ln, string hc)
   else
   {
     Log.info("=> rejecting id %s for list %s.", hc, ln);
+
     c->delete();
+
+    object mime = MIME.Message();
+    mime->headers["subject"] = "Moderation result for " + r->list["name"];
+    mime->headers["from"] = app->get_address_for_function(r->list, "moderate");
+    mime->headers["to"] = (string)r->sender;
+
+    string msg = r->list["_options"]["moderate_response"] ||
+#string "response.txt";
+
+    object v = app->view->get_string_view(msg);
+
+    v->add("list", r->list);
+    v->add("holdid", hc);
+    v->add("request", "reject");
+
+    mime->setdata(v->render());
+
+    app->send_message(mime->headers["from"], (string)r->sender, (string)mime);
+
     return 0;
   }
 }
