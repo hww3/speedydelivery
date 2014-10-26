@@ -1,0 +1,2 @@
+Your request to <%$request%> for list <%$list.name%> with id <%$holdid%>
+was completed successfully.
