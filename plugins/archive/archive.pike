@@ -22,7 +22,7 @@ int archive_message(string eventname, mapping event, mixed ... args)
 Log.info("archiving message");
    SpeedyDelivery.Objects.Archived_message m;
    m = SpeedyDelivery.Objects.Archived_message();
-   m["List"] = event->request->list;
+   m["List"] = event->list;
    m["envelope_from"] = (string)event->request->sender;
 
    // the envelope_from address almost never includes a nice name.
@@ -33,9 +33,9 @@ Log.info("archiving message");
      if(addr)
       m["envelope_from"] = (string)addr;
    }
-   m["messageid"] = (string)event->request->mime->headers["message-id"];
-   if(event->request->mime->headers["in-reply-to"])
-     m["referenceid"] = (string)event->request->mime->headers["in-reply-to"];
+   m["messageid"] = (string)event->mime->headers["message-id"];
+   if(event->mime->headers["in-reply-to"])
+     m["referenceid"] = (string)event->mime->headers["in-reply-to"];
    m["subject"] = event->mime->headers->subject;
    m["content"] = (string)event->mime;
    m->save();
@@ -67,21 +67,21 @@ Log.info("doUpdateIndex");
     return;
   }
 Log.info("getting client: %O, %O.", event, p);
-  string indexname = "SpeedyDelivery_" + event->request->list["name"];
+  string indexname = "SpeedyDelivery_" + event->list["name"];
 Log.info("index name: %O", indexname);
   object c;
 object e = catch(c = FullText.UpdateClient(p["url"], indexname, p["auth"], 1));
 Log.info("got client: %O.", e);
 
 Log.info("index ready.");
-  object t = Calendar.dwim_time(event->request->mime->headers->date);
+  object t = Calendar.dwim_time(event->mime->headers->date);
 
   string content;
    content = Tools.String.textify(
-                SpeedyDelivery.getfullbodytext(event->request->mime, content));
+                SpeedyDelivery.getfullbodytext(event->mime, content));
     Log.info("submitting message %O for indexing.", message);
 
-  c->add(event->request->mime->headers->subject, 
+  c->add(event->mime->headers->subject, 
       t, content,
       (string)message["id"],
       Tools.String.make_excerpt(content),      

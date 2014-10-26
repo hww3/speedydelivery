@@ -1,6 +1,6 @@
 #!/bin/sh
 
-  PIKE_ARGS=""
+  PIKE_ARGS="-DSINGLE_TENANT"
 
   if [ x$FINS_HOME != "x" ]; then
     PIKE_ARGS="$PIKE_ARGS -M$FINS_HOME/lib"

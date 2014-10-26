@@ -28,10 +28,12 @@ static void create(Fins.Application _app, object _mime, string _sender, string _
 void populate_fields()
 {
   array x = fins_app->is_valid_address(recipient);
+  if(!x) throw(Error.Generic(sprintf("invalid list address %O\n", recipient)));
 
- // werror("x: %O\n", x);
+  list = fins_app->get_list(x[0]);
+  if(!list) 
+    throw(Error.Generic(sprintf("unknown list %O\n", x[0])));
 
-  list = Fins.Model.get_context("_default")->find->lists_by_alt(x[0]);
   list_address = sprintf("%s@%s", list["name"], fins_app->getmyhostname());
   functionname = x[1];
 }

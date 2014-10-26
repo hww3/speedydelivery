@@ -460,12 +460,8 @@ mixed is_valid_address(Mail.MailAddress a)
 
   object l;
 
-  if(catch(l = ds->find->lists_by_alt(x*"-")))
-  {
-    Log.info("%s is not a valid list identifier.", x*"-");
-    return 0;
-  }
-
+  l = get_list(x*"-");
+  if(!l) return 0;
   Log.debug("list: %O, function: %O", l["name"], functionname);
 
   valid_addresses[a->localpart] = ({l["name"], functionname || "__default"});
@@ -473,6 +469,16 @@ mixed is_valid_address(Mail.MailAddress a)
   return valid_addresses[a->localpart];
 }
 
+object get_list(string listname)
+{
+  object l;
+  if(catch(l = ds->find->lists_by_alt(listname)))
+  {
+    Log.info("%s is not a valid list identifier.", listname);
+    return 0;
+  }
+  return l;
+}
 
 void distribute_message(SpeedyDelivery.Request r)
 {
