@@ -37,18 +37,18 @@ int run(mixed ... args)
     if(burst_mode)
     {
       object burster = Mail.RFC934Digest();
-      burster->burst(f, import_message);
+      burster->burst(f, import_message, list);
     }
     else
     {
       string x = Stdio.read_file(fn);
-      return import_message(x, 0);
+      return import_message(x, 0, list);
     }
   }
   
 }
 
-int import_message(string file, int num)
+int import_message(string file, int num, string list)
 {
     object rq;
     object mime;
