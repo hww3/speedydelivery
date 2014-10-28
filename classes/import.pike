@@ -45,7 +45,8 @@ int run(mixed ... args)
       return import_message(x, 0, list);
     }
   }
-  
+
+sleep(5);  
 }
 
 int import_message(string file, int num, string list)
@@ -56,14 +57,21 @@ int import_message(string file, int num, string list)
     string recipient;
     mixed err;
 
-    mime = MIME.Message(file);
+
+    mime = MIME.Message(String.trim_all_whites(file));
     sender = mime->headers->from;
-    recipient = mime->headers->to;
+    recipient = list + "@localhost";
     werror("importing message %O\n", num);
     
     err = catch(rq = SpeedyDelivery.Request(app, mime, sender, recipient, 0, 0));
     if(err)
+    {
       werror("error: %s\n", Error.mkerror(err)->message());
+      werror(master()->describe_backtrace(Error.mkerror(err)->backtrace()));
+    }
 
-    return 0;
+    int res = app->trigger_event("preDelivery",
+             (["request": rq, "mime": rq->mime, "list": rq->list]));
+     if(res == SpeedyDelivery.abort) return 1;
+     else return 0;
 }

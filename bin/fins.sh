@@ -1,6 +1,9 @@
 #!/bin/sh
 
   PIKE_ARGS="-DSINGLE_TENANT"
+  if [ "x$PIKE" = "x" ] ; then
+    PIKE=pike
+  fi
 
   if [ x$FINS_HOME != "x" ]; then
     PIKE_ARGS="$PIKE_ARGS -M$FINS_HOME/lib"
@@ -15,5 +18,5 @@
     exit 1
   fi
   shift 1
-  exec pike $PIKE_ARGS -x fins $ARG0 SpeedyDelivery $*
+  exec $PIKE $PIKE_ARGS -x fins $ARG0 SpeedyDelivery $*
 

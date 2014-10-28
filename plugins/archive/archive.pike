@@ -38,6 +38,7 @@ Log.info("archiving message");
      m["referenceid"] = (string)event->mime->headers["in-reply-to"];
    m["subject"] = event->mime->headers->subject;
    m["content"] = (string)event->mime;
+   m["archived"] = Calendar.dwim_time(event->mime->headers->date);
    m->save();
    updateIndex(eventname, event, m);
 
@@ -80,7 +81,6 @@ Log.info("index ready.");
    content = Tools.String.textify(
                 SpeedyDelivery.getfullbodytext(event->mime, content));
     Log.info("submitting message %O for indexing.", message);
-
   c->add(event->mime->headers->subject, 
       t, content,
       (string)message["id"],
