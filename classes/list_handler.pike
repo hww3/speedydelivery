@@ -35,13 +35,19 @@ int handle_post(SpeedyDelivery.Request request)
         mime->headers["subject"] = "message posting denied";
         mime->headers["to"] = request->sender->get_address();
         mime->headers["from"] = app->get_bounce_address(request->list);
-        mime->setdata("Your posting with the subject of:\n\n" + request->mime->headers->subject + "\n\nwas denied because list policy requires posters to subscribe."
-		"\n\nIt has been sent to the list owner for review.\n");
+        string msg = "Your posting with the subject of:\n\n" + request->mime->headers->subject + "\n\nwas denied because list policy requires posters to subscribe.";
+        if(o->moderation_enabled)
+	  msg += "\n\nIt has been sent to the list owner for review.\n";
 
-        SpeedyDelivery.Objects.Held_message()->new_for_list_action(request->list, "nonmember", request->sender->get_address(), request->mime);
+        mime->setdata(msg);
+
+	if(o->moderation_enabled)
+        {
+          SpeedyDelivery.Objects.Held_message()->new_for_list_action(request->list, "nonmember", request->sender->get_address(), request->mime);
+        }
+
         mixed e = catch(app->send_message_for_list(request->list, ({request->sender->get_address()}), (string)mime));
         if(e) Log.exception("error occurred while sending rejection message.", e);
-
         return 250;
       }
     }
