@@ -7,6 +7,8 @@ mapping event_handlers = ([]);
 mapping destination_handlers = ([]);
 mapping valid_addresses = ([]);
 
+mapping list_settings = ([]);
+
 string list_handler_prog = "list_handler";
 mixed queue_processor_callout_id;
 
@@ -484,3 +486,8 @@ void distribute_message(SpeedyDelivery.Request r)
 {
    function_object(destination_handlers->__default)->do_post(r);
 } 
+
+mapping query_list_settings()
+{
+  return list_settings;
+}
