@@ -68,6 +68,11 @@ mixed get_preference(string pref)
   return app->get_sys_pref("plugin." + name + "." + pref);
 }
 
+mixed get_list_setting(string setting, object list)
+{
+  return list["_options"][("_plugin_"+ name + "_" + setting)];
+}
+
 mapping query_event_callers();
 
 mapping query_destination_callers();
@@ -75,3 +80,5 @@ mapping query_destination_callers();
 //! @returns a mapping containing localprefname : ([ "type": FinScribe.STRING|FinScribe.BOOLEAN, "value": defaultvalue])
 //!    pairs. these will be automatically created if they don't exist.
 mapping(string:mapping) query_preferences();
+
+mapping(string:mapping) query_list_settings();

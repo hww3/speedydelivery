@@ -12,6 +12,14 @@ mapping query_event_callers()
   return ([ "preDelivery" : archive_message ]);
 }
 
+mapping query_list_settings()
+{
+  return ([
+           "full_text_enabled": (["type": SpeedyDelivery.BOOLEAN, "value": 1, "name": "Enable Full Text"]),
+           "full_text_authkey": (["type": SpeedyDelivery.STRING, "value": "", "name": "Full Text Auth Key"])
+         ]);
+}
+
 mapping query_destination_callers()
 {
   return ([ ]);

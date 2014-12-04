@@ -116,6 +116,13 @@ void start_plugins()
              continue;
            Log.info("Starting " + name);
 
+                if(plugin->query_list_settings && functionp(plugin->query_list_settings))
+                {
+                  foreach(plugin->query_preferences(); string p; mapping pv)
+                  {
+                    list_settings["_plugin_" + name + "_" + p] = pv;
+                  }
+                }
                 if(plugin->query_preferences && functionp(plugin->query_preferences))
                 {
                   foreach(plugin->query_preferences(); string p; mapping pv)
